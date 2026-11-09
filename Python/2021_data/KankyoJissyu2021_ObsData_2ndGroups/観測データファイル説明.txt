@@ -1,0 +1,13 @@
+観測データ期間
+2021/7/8 17:30 ～ 7/14 14:30
+Time_stamp = 3708610200 ～ 3709117800
+
+データファイル
+obs_data_chamber_1.csv
+obs_data_chamber_2.csv
+obs_data_chamber_3.csv
+
+1列目から8列目（Time_stampからzeta_tubid）の定義と単位は、テキスト p. 23の通り
+9列目、10列目はそれぞれ
+ref_RH : 標準機器で測定された室内空気の相対湿度 （0から1の範囲）
+ref_ParticleConc : 標準機器で測定された室内空気のエアロゾル数濃度 [個/cm3]

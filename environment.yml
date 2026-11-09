@@ -1,0 +1,23 @@
+# Python environment of the project (analysis, SBI, GUI, paper figures).
+# Create:  conda env create -f environment.yml    (Miniforge; then run scripts with
+#          conda run -n cloudchamber --no-capture-output python <script>)
+# Versions are those used for the paper (2026-11); nidaqmx is only needed to run the instrument.
+name: cloudchamber
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy=2.5
+  - scipy=1.18
+  - pandas=3.1
+  - matplotlib=3.11
+  - pillow
+  - numba=0.68
+  - pytorch=2.14
+  - pyqtgraph=0.14
+  - pyqt
+  - pyserial
+  - pip
+  - pip:
+      - sbi==0.27.0
+      - nidaqmx==1.7.0

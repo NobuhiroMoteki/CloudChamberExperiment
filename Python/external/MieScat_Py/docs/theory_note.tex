@@ -1,0 +1,452 @@
+\documentclass[a4paper,11pt]{article}
+
+% ──── Required packages (order per project convention) ────
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{physics}       % \dd, \grad, \curl, \div, bra-ket
+\usepackage{bm}            % \bm{} for bold-italic vectors
+\usepackage{siunitx}       % \SI{3e8}{\meter\per\second}
+\usepackage{booktabs}      % \toprule \midrule \bottomrule
+\usepackage{geometry}
+\geometry{margin=25mm}
+\usepackage{enumitem}
+\usepackage{hyperref}      % LAST package
+
+\title{Technical Note: Lorenz--Mie Scattering Theory\\[4pt]
+\large Mathematical Formulation and Computational Implementation}
+\author{N.\ Moteki}
+\date{Last updated: 2026-03-19 (corresponds to MieScat\_Py v0.2.0)}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+\texttt{MieScat\_Py} solves the classical problem of electromagnetic scattering
+by a single homogeneous isotropic sphere embedded in a nonabsorbing medium.
+The implementation follows the formulations in Bohren and Huffman
+\cite{bohren1983} (hereafter BH83) and Mishchenko et al.\ \cite{mishchenko2002},
+with an extension to electrically charged spheres based on Klacka and Kocifaj
+\cite{klacka2010} (hereafter KK10).  The forward and backward complex
+scattering amplitudes used for Complex Amplitude Sensing (CAS) are defined
+according to Moteki \cite{moteki2021} and Moteki and Adachi \cite{moteki2024}.
+
+This note documents the mathematical formulations, numerical algorithms, and
+their correspondence to the code.  Sec.~\ref{sec:mie-theory} covers the
+standard Mie theory for neutral spheres, from the problem definition through to
+the computed observables.  Sec.~\ref{sec:charged-sphere} describes the
+extension to charged spheres.  Sec.~\ref{sec:cas} defines the CAS-specific
+observables.  Sec.~\ref{sec:implementation} summarizes the computational
+implementation.
+
+
+%=============================================================================
+\section{Mie theory for neutral spheres}
+\label{sec:mie-theory}
+%=============================================================================
+
+\subsection{Problem definition and notation}
+\label{sec:problem-definition}
+
+Consider a sphere of diameter $d_\mathrm{p}$ (radius
+$r_\mathrm{p} = d_\mathrm{p}/2$) with complex refractive index
+\begin{equation}
+  m_\mathrm{p} = n_\mathrm{p} + i\, \kappa_\mathrm{p}
+  \label{eq:mp-def}
+\end{equation}
+embedded in a nonabsorbing medium with real refractive index $m_\mathrm{m}$.
+A monochromatic plane wave of vacuum wavelength $\lambda_0$ illuminates the
+sphere.  The vacuum wavenumber, medium wavenumber, size parameter, and relative
+refractive index are
+\begin{align}
+  k_0 &= \frac{2\pi}{\lambda_0},
+  &
+  k   &= m_\mathrm{m}\, k_0,
+  &
+  x   &= k\, r_\mathrm{p}
+       = \frac{\pi\, d_\mathrm{p}\, m_\mathrm{m}}{\lambda_0},
+  &
+  m_\mathrm{r} &= \frac{m_\mathrm{p}}{m_\mathrm{m}}.
+  \label{eq:basic-params}
+\end{align}
+The number of terms retained in the partial wave expansion is
+\begin{equation}
+  N_\mathrm{stop} = \lfloor |x| + 4\,|x|^{1/3} + 2 \rfloor,
+  \label{eq:nstop}
+\end{equation}
+following the criterion of BH83.
+
+\subsection{Ricatti--Bessel functions and logarithmic derivative}
+\label{sec:ricatti-bessel}
+
+The Mie solution is expressed in terms of the Ricatti--Bessel functions
+\begin{equation}
+  \psi_n(z) = z\, j_n(z),
+  \qquad
+  \chi_n(z) = -z\, y_n(z),
+  \qquad
+  \xi_n(z) = \psi_n(z) + i\,\chi_n(z) = z\, h_n^{(1)}(z),
+  \label{eq:ricatti-bessel-def}
+\end{equation}
+where $j_n$, $y_n$, and $h_n^{(1)}$ are the spherical Bessel, Neumann, and
+Hankel functions of the first kind, respectively.
+
+The logarithmic derivative of $\psi_n$ at argument $y = m_\mathrm{r}\, x$ is
+\begin{equation}
+  D_n(y) = \frac{\dd}{\dd y}\ln \psi_n(y)
+         = \frac{\psi_n'(y)}{\psi_n(y)}.
+  \label{eq:log-deriv-def}
+\end{equation}
+It is computed by the numerically stable \emph{downward} recurrence (BH83,
+Sec.~4.8)
+\begin{equation}
+  D_{n-1}(y) = \frac{n}{y} - \frac{1}{D_n(y) + n/y},
+  \qquad n = N_\mathrm{mx},\, N_\mathrm{mx}-1,\, \ldots,\, 1,
+  \label{eq:log-deriv-recurrence}
+\end{equation}
+starting from $D_{N_\mathrm{mx}}(y) = 0$, where
+$N_\mathrm{mx} = \lfloor \max(N_\mathrm{stop},\, |y|) + 15 \rfloor$.
+
+$\psi_n(x)$ is computed via the ratio
+$R_n = \psi_n(x)/\psi_{n-1}(x)$ using downward recurrence
+(Mishchenko et al.\ \cite{mishchenko2002}):
+\begin{equation}
+  R_n = \frac{1}{(2n+1)/x - R_{n+1}},
+  \quad n = N_\mathrm{mx}-1,\, \ldots,\, 0,
+  \qquad
+  R_{N_\mathrm{mx}} = \frac{x}{2N_\mathrm{mx}+1},
+  \label{eq:psi-ratio-recurrence}
+\end{equation}
+followed by $\psi_0(x) = R_0 \cos x$ and
+$\psi_n(x) = R_n\, \psi_{n-1}(x)$ for $n \ge 1$.
+
+$\chi_n(x)$ is computed by upward recurrence, which is stable for this
+function:
+\begin{equation}
+  \chi_0(x) = -\cos x, \qquad
+  \chi_1(x) = \frac{\chi_0(x)}{x} - \sin x, \qquad
+  \chi_n(x) = \frac{2n-1}{x}\,\chi_{n-1}(x) - \chi_{n-2}(x).
+  \label{eq:chi-recurrence}
+\end{equation}
+
+\subsection{Partial wave coefficients}
+\label{sec:partial-wave}
+
+For a neutral (uncharged) sphere, the partial wave (Mie) coefficients $a_n$ and
+$b_n$ are (BH83, Eq.~4.88)
+\begin{align}
+  a_n &= \frac{
+    \bigl(D_n(y)/m_\mathrm{r} + n/x\bigr)\,\psi_n(x) - \psi_{n-1}(x)
+  }{
+    \bigl(D_n(y)/m_\mathrm{r} + n/x\bigr)\,\xi_n(x) - \xi_{n-1}(x)
+  },
+  \label{eq:an-neutral} \\[6pt]
+  b_n &= \frac{
+    \bigl(m_\mathrm{r}\,D_n(y) + n/x\bigr)\,\psi_n(x) - \psi_{n-1}(x)
+  }{
+    \bigl(m_\mathrm{r}\,D_n(y) + n/x\bigr)\,\xi_n(x) - \xi_{n-1}(x)
+  },
+  \label{eq:bn-neutral}
+\end{align}
+where $y = m_\mathrm{r}\, x$ and $n = 1, 2, \ldots, N_\mathrm{stop}$.
+The coefficients $a_n$ correspond to the electric (TM) multipoles and $b_n$ to
+the magnetic (TE) multipoles.
+
+\subsection{Optical efficiency factors}
+\label{sec:efficiency-factors}
+
+Given $a_n$ and $b_n$, the optical efficiency factors are (BH83,
+Eqs.~4.61--4.62)
+\begin{align}
+  Q_\mathrm{sca} &= \frac{2}{x^2}
+    \sum_{n=1}^{N_\mathrm{stop}} (2n+1)\bigl(|a_n|^2 + |b_n|^2\bigr),
+  \label{eq:qsca} \\
+  Q_\mathrm{ext} &= \frac{2}{x^2}
+    \sum_{n=1}^{N_\mathrm{stop}} (2n+1)\,\Re(a_n + b_n),
+  \label{eq:qext} \\
+  Q_\mathrm{abs} &= Q_\mathrm{ext} - Q_\mathrm{sca},
+  \label{eq:qabs} \\
+  Q_\mathrm{back} &= \frac{1}{x^2}
+    \left|\sum_{n=1}^{N_\mathrm{stop}} (2n+1)(-1)^n (a_n - b_n)\right|^2.
+  \label{eq:qback}
+\end{align}
+These are dimensionless ratios of the respective cross sections to the
+geometric cross section $\pi r_\mathrm{p}^2$.
+
+\subsection{Scattering amplitudes}
+\label{sec:scattering-amplitudes}
+
+The angle-dependent functions $\pi_n(\cos\theta)$ and $\tau_n(\cos\theta)$
+are defined as
+\begin{equation}
+  \pi_n(\cos\theta) = \frac{P_n^1(\cos\theta)}{\sin\theta}, \qquad
+  \tau_n(\cos\theta) = \frac{\dd P_n^1(\cos\theta)}{\dd\theta},
+  \label{eq:pi-tau-def}
+\end{equation}
+where $P_n^1$ is the associated Legendre function of degree $n$ and order~1.
+They satisfy the recurrence relations (with $\mu = \cos\theta$,
+$\pi_1 = 1$, $\pi_2 = 3\mu$)
+\begin{equation}
+  \pi_n = \frac{2n-1}{n-1}\,\mu\,\pi_{n-1} - \frac{n}{n-1}\,\pi_{n-2},
+  \qquad
+  \tau_n = n\,\mu\,\pi_n - (n+1)\,\pi_{n-1}.
+  \label{eq:pi-tau-recurrence}
+\end{equation}
+
+The elements of the $2 \times 2$ amplitude scattering matrix (BH83, Eq.~4.74)
+are
+\begin{align}
+  S_1(\theta) &= \sum_{n=1}^{N_\mathrm{stop}}
+    \frac{2n+1}{n(n+1)}\bigl(a_n\,\pi_n + b_n\,\tau_n\bigr),
+  \label{eq:s1} \\
+  S_2(\theta) &= \sum_{n=1}^{N_\mathrm{stop}}
+    \frac{2n+1}{n(n+1)}\bigl(a_n\,\tau_n + b_n\,\pi_n\bigr).
+  \label{eq:s2}
+\end{align}
+The code converts these to the amplitude matrix convention of
+Mishchenko et al.\ \cite{mishchenko2002}:
+\begin{equation}
+  S_{11}(\theta) = \frac{S_2(\theta)}{-ik}, \qquad
+  S_{22}(\theta) = \frac{S_1(\theta)}{-ik}.
+  \label{eq:s11-s22}
+\end{equation}
+Note the index swap: $S_{11}$ is derived from $S_2$, and $S_{22}$ from $S_1$.
+Both have the dimension of length.
+
+\subsection{Mass-normalized cross sections}
+\label{sec:mass-cross-sections}
+
+The geometric cross section, particle volume, and particle mass are
+\begin{equation}
+  C_\mathrm{geo} = \frac{\pi d_\mathrm{p}^2}{4},
+  \qquad
+  V_\mathrm{p} = \frac{\pi d_\mathrm{p}^3}{6},
+  \qquad
+  M_\mathrm{p} = \rho_\mathrm{p}\, V_\mathrm{p},
+  \label{eq:mass-def}
+\end{equation}
+where $\rho_\mathrm{p}$ is the particle material density.
+The mass-normalized cross sections are
+\begin{equation}
+  \mathrm{MSC} = \frac{C_\mathrm{geo}\, Q_\mathrm{sca}}{M_\mathrm{p}},
+  \qquad
+  \mathrm{MEC} = \frac{C_\mathrm{geo}\, Q_\mathrm{ext}}{M_\mathrm{p}},
+  \qquad
+  \mathrm{MAC} = \frac{C_\mathrm{geo}\, Q_\mathrm{abs}}{M_\mathrm{p}}.
+  \label{eq:mass-cross-sections}
+\end{equation}
+When $d_\mathrm{p}$ is given in \si{\meter} and $\rho_\mathrm{p}$ in
+\si{\gram\per\cubic\centi\meter}, the code internally converts
+$V_\mathrm{p}$ to \si{\cubic\centi\meter} so that
+$M_\mathrm{p}$ is in \si{\gram} and the mass-normalized cross sections are in
+\si{\meter\squared\per\gram}.
+
+
+%=============================================================================
+\section{Extension to charged spheres}
+\label{sec:charged-sphere}
+%=============================================================================
+
+For a sphere carrying $n_\mathrm{e}$ elementary charges $e$ in vacuum
+($m_\mathrm{m} = 1$), the formulation of KK10 introduces a
+charge-dependent $G$-parameter that modifies $a_n$ and $b_n$.  The total charge
+is $Q = n_\mathrm{e}\, e$ and the electrostatic surface potential is
+\begin{equation}
+  V_\mathrm{surf} = \frac{Q}{4\pi\epsilon_0\, r_\mathrm{p}}.
+  \label{eq:surf-potential}
+\end{equation}
+The quantum scattering rate is estimated as (KK10, Eq.~37)
+\begin{equation}
+  \gamma_\mathrm{s} = f_\gamma \,\frac{k_\mathrm{B} T}{\hbar},
+  \label{eq:gamma-s}
+\end{equation}
+where $f_\gamma$ is a dimensionless correction factor, $k_\mathrm{B}$ is the
+Boltzmann constant, $T = \SI{298}{\kelvin}$, and $\hbar$ is the reduced Planck
+constant.  The dimensionless charge parameter is (KK10, Eq.~26)
+\begin{equation}
+  G = \frac{e\, V_\mathrm{surf}}{m_\mathrm{e}\, c^2}
+      \cdot \frac{1}{x}
+      \cdot \frac{1 + i\,(\gamma_\mathrm{s}/\omega)}
+                 {1 + (\gamma_\mathrm{s}/\omega)^2},
+  \label{eq:g-parameter}
+\end{equation}
+where $m_\mathrm{e}$ is the electron mass, $c$ is the speed of light, and
+$\omega = k\, c$ is the angular frequency.
+
+The modified partial wave coefficients for the charged sphere are
+\begin{align}
+  a_n &= \frac{
+    \bigl[(1 + nG/x)\, D_n/m_\mathrm{p} + n/x\bigr]\,\psi_n
+    - (1 + G\, D_n/m_\mathrm{p})\,\psi_{n-1}
+  }{
+    \bigl[(1 + nG/x)\, D_n/m_\mathrm{p} + n/x\bigr]\,\xi_n
+    - (1 + G\, D_n/m_\mathrm{p})\,\xi_{n-1}
+  },
+  \label{eq:an-charged} \\[6pt]
+  b_n &= \frac{
+    \bigl[m_\mathrm{p}\, D_n + (n/x)(1 - Gx/n)\bigr]\,\psi_n - \psi_{n-1}
+  }{
+    \bigl[m_\mathrm{p}\, D_n + (n/x)(1 - Gx/n)\bigr]\,\xi_n - \xi_{n-1}
+  },
+  \label{eq:bn-charged}
+\end{align}
+where all Ricatti--Bessel functions are evaluated at~$x$, and
+$D_n = D_n(m_\mathrm{p}\, x)$ with $m_\mathrm{r} = m_\mathrm{p}$ (since the
+medium is vacuum).  When $G = 0$ (i.e., $n_\mathrm{e} = 0$),
+\eqref{eq:an-charged}--\eqref{eq:bn-charged} reduce to the standard Mie
+expressions \eqref{eq:an-neutral}--\eqref{eq:bn-neutral} with
+$m_\mathrm{r} = m_\mathrm{p}$.  The efficiency factors, scattering amplitudes,
+and mass-normalized cross sections are then computed identically to
+Sec.~\ref{sec:efficiency-factors}--\ref{sec:mass-cross-sections}.
+
+
+%=============================================================================
+\section{Complex Amplitude Sensing observables}
+\label{sec:cas}
+%=============================================================================
+
+For the CAS protocol \cite{moteki2021,moteki2024}, the relevant observables
+are the forward scattering amplitude $S(0)$ and a backward scattering
+amplitude $S_\mathrm{bak}$.
+
+At $\theta = 0$ the angular functions satisfy $\pi_n(1) = \tau_n(1) = 1$ for
+all~$n$, so $S_1(0) = S_2(0)$ and hence $S_{11}(0) = S_{22}(0)$.  The forward
+scattering amplitude is
+\begin{equation}
+  S(0) = \frac{S_{11}(0) + S_{22}(0)}{2} = S_{11}(0).
+  \label{eq:s-fwd}
+\end{equation}
+At $\theta = \pi$ the angular functions satisfy $\pi_n(-1) = (-1)^{n+1}$ and
+$\tau_n(-1) = (-1)^n$, giving $S_1(\pi) = -S_2(\pi)$.  The backward
+scattering amplitude for CAS-v2 is
+\begin{equation}
+  S_\mathrm{bak} = \frac{-S_{11}(\pi) + S_{22}(\pi)}{\sqrt{2}}.
+  \label{eq:s-bak}
+\end{equation}
+The code returns $\Re[S(0)]$, $\Im[S(0)]$, $\Re[S_\mathrm{bak}]$, and
+$\Im[S_\mathrm{bak}]$, all having the dimension of length.
+
+
+%=============================================================================
+\section{Computational implementation}
+\label{sec:implementation}
+%=============================================================================
+
+\begin{table}[htbp]
+  \caption{Modules in \texttt{MieScat\_Py} v0.2.0 and their roles.}
+  \label{tab:modules}
+  \centering
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Module & Role \\
+    \midrule
+    \texttt{\_mie\_core.py}            & Shared helper functions
+      (\eqref{eq:log-deriv-recurrence}--\eqref{eq:s11-s22}) \\
+    \texttt{miescat.py}                & Neutral sphere:
+      $Q$-factors, $S_{11}$, $S_{22}$, MSC/MEC/MAC \\
+    \texttt{miescat\_charged.py}       & Charged sphere (KK10):
+      adds $V_\mathrm{surf}$, $G$-parameter \\
+    \texttt{mie\_complex\_amplitudes.py} & CAS observables:
+      $S(0)$ and $S_\mathrm{bak}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The key numerical considerations are as follows.
+The logarithmic derivative $D_n(y)$ is computed by \emph{downward} recurrence
+\eqref{eq:log-deriv-recurrence}, which is numerically stable for complex~$y$
+(BH83, Sec.~4.8).
+$\psi_n(x)$ is computed via the ratio method
+\eqref{eq:psi-ratio-recurrence} using downward recurrence on the ratios $R_n$,
+which avoids the catastrophic cancellation that plagues upward recurrence for
+large~$x$ (Mishchenko et al.\ \cite{mishchenko2002}).
+$\chi_n(x)$ is computed by upward recurrence \eqref{eq:chi-recurrence}, which
+is stable for this function.
+The recurrence relations for $D_n$, $R_n$, $\psi_n$, $\chi_n$, $\pi_n$,
+and $\tau_n$ remain as sequential loops because each step depends on the
+previous value.
+
+In v0.2.0, the following element-wise Python loops were replaced by NumPy
+vectorized operations:
+(i)~the weight arrays $(2n+1)$, $(2n+1)/[n(n+1)]$, and $(-1)^n$;
+(ii)~the partial wave coefficients $a_n$, $b_n$
+(\eqref{eq:an-neutral}--\eqref{eq:bn-neutral} or
+ \eqref{eq:an-charged}--\eqref{eq:bn-charged}) for all $n$ simultaneously;
+(iii)~the scattering amplitude sums \eqref{eq:s1}--\eqref{eq:s2} over $n$
+for all angles $\theta$ simultaneously via array broadcasting.
+
+\begin{table}[htbp]
+  \caption{Correspondence between mathematical symbols and code variables.}
+  \label{tab:variables}
+  \centering
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Symbol & Code variable & Description \\
+    \midrule
+    $\lambda_0$        & \texttt{wl\_0}      & Vacuum wavelength \\
+    $m_\mathrm{m}$     & \texttt{m\_m}       & Medium refractive index \\
+    $d_\mathrm{p}$     & \texttt{d\_p}       & Particle diameter \\
+    $m_\mathrm{p}$     & \texttt{m\_p}       & Complex particle refractive index \\
+    $m_\mathrm{r}$     & \texttt{m\_r}       & Relative refractive index \\
+    $x$                & \texttt{x}          & Size parameter \\
+    $N_\mathrm{stop}$  & \texttt{nstop}      & Number of expansion terms \\
+    $D_n(y)$           & \texttt{DD[n]}      & Logarithmic derivative \\
+    $\psi_n(x)$        & \texttt{psi[n]}     & Ricatti--Bessel (1st kind) \\
+    $\chi_n(x)$        & \texttt{chi[n]}     & Ricatti--Bessel (2nd kind) \\
+    $\xi_n(x)$         & \texttt{xi[n]}      & Ricatti--Bessel (3rd kind) \\
+    $a_n$              & \texttt{a[n]}       & Electric multipole coefficient \\
+    $b_n$              & \texttt{b[n]}       & Magnetic multipole coefficient \\
+    $\pi_n$            & \texttt{pi\_n[n,:]} & Angular function \\
+    $\tau_n$           & \texttt{tau\_n[n,:]}& Angular function \\
+    $S_1$, $S_2$       & \texttt{S1}, \texttt{S2}  & BH83 amplitude elements \\
+    $S_{11}$, $S_{22}$ & \texttt{S11}, \texttt{S22} & Mishchenko amplitude elements \\
+    $G$                & \texttt{g}          & Charge parameter (KK10) \\
+    $V_\mathrm{surf}$  & \texttt{surf\_potential} & Surface potential \\
+    $\rho_\mathrm{p}$  & \texttt{dens\_p}    & Particle density \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+\clearpage
+\begin{thebibliography}{9}
+\bibitem{bohren1983}
+  C.~F. Bohren and D.~R. Huffman,
+  \textit{Absorption and Scattering of Light by Small Particles},
+  John Wiley \& Sons, 1983.
+
+\bibitem{mishchenko2002}
+  M.~I. Mishchenko, L.~D. Travis, and A.~A. Lacis,
+  \textit{Scattering, Absorption, and Emission of Light by Small Particles},
+  Cambridge University Press, 2002.
+
+\bibitem{klacka2010}
+  J.~Klacka and M.~Kocifaj,
+  ``On the scattering of electromagnetic waves by a charged sphere,''
+  \textit{Progress In Electromagnetics Research}, vol.~109, pp.~17--35, 2010.
+
+\bibitem{moteki2021}
+  N.~Moteki,
+  ``Measuring the complex forward-scattering amplitude of single particles
+  by self-reference interferometry: CAS-v1 protocol,''
+  \textit{Optics Express}, vol.~29, no.~13, pp.~20688--20714, 2021.
+  \href{https://doi.org/10.1364/OE.423175}{doi:10.1364/OE.423175}.
+
+\bibitem{moteki2024}
+  N.~Moteki and K.~Adachi,
+  ``Measuring the polarized complex forward-scattering amplitudes of single
+  particles in unbounded fluid flow: CAS-v2 protocol,''
+  \textit{Optics Express}, vol.~32, no.~21, pp.~36500--36522, 2024.
+  \href{https://doi.org/10.1364/OE.533776}{doi:10.1364/OE.533776}.
+\end{thebibliography}
+
+\bigskip
+\noindent\textbf{Acknowledgment.}\quad
+This document was prepared with the assistance of Claude (Anthropic).
+The author assumes full responsibility for the content.
+
+\end{document}

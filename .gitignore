@@ -1,0 +1,38 @@
+# observation data (grows ~18 MB/day; back up separately), photos/videos, third-party manual
+/data/
+/photos_video/
+/CPC3022A/
+
+# Python caches (numba caches live in __pycache__ too)
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+Python/sbi-logs/
+
+# regenerable caches: Mie tables, SBI simulation sets (trained posteriors *.pt are kept)
+*.npy
+Python/models/*_sims_*.npz
+Python/models/pressure_correction_grid*.npz
+
+# LaTeX build products
+build/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.blg
+*.xbb
+
+# OS / editor
+Thumbs.db
+desktop.ini
+~$*
+
+# Reference PDFs (copyrighted; local only)
+Paper/JAerosolSci/refs_pdf/
+# Published paper kept as a format reference (copyrighted; local only)
+Paper/JAerosolSci/Moteki_etal_2026_JAerosolSCi_BC_RefractiveIndex.pdf
+

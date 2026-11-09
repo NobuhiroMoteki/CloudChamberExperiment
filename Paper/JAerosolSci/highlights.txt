@@ -1,0 +1,7 @@
+Highlights (Journal of Aerosol Science: 3-5 bullets, at most 85 characters each incl. spaces)
+
+- Total particle number concentration from the extinction curve of an expansion cloud
+- No working fluid: the sample's own water vapor, whose mixing ratio is also inferred
+- Growth and forward-scatter physics inverted by neural posterior estimation
+- Median ratio 0.995 to a CPC (r = 0.997) indoors; no CPC or hygrometer calibration
+- Affordable general-purpose parts; undergraduates built the same design in a course
