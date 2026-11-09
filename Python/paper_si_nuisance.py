@@ -42,7 +42,7 @@ LABELS = {"alpha_c": (r"Condensation coefficient $\alpha_c$", "0.1", "1"),
           "sigma_g": (r"Geometric standard deviation $\sigma_g$", "1.4", "2.2"),
           "kappa": (r"Hygroscopicity $\kappa$", "0.1", "0.7"),
           "spread": ("Droplet-radius spread", "0.015", "0.10"),
-          "spread_floor": ("Floor of the spread", "0.003", "0.03")}
+          "spread_floor": ("Lower bound of the spread", "0.003", "0.03")}
 DT_SCALE, TR_SCALE = 0.02, 0.003  # [s], [-] weights of the misfit (as for the gain-lag valley)
 LAGS = P_LAG_NOM + np.arange(-LAG_HALF_NOM, LAG_HALF_NOM + 1e-9, 0.005)  # [s] scanned without new simulations
 
@@ -97,8 +97,8 @@ def fit_cycle(row, fixed_lag=False):
 
 def write_table(res):
     lines = [r"\begin{tabular}{llll}", r"\toprule",
-             r"Parameter & Edge & $N/N_\mathrm{nominal}$, median (IQR) & Misfit, median \\", r"\midrule",
-             f"Nominal set & -- & 1 & {res.nominal_cost.median():.2f} \\\\"]
+             r"Parameter & Edge & $N/N_\mathrm{ref}$, median (IQR) & Misfit, median \\", r"\midrule",
+             f"Reference set & -- & 1 & {res.nominal_cost.median():.2f} \\\\"]
     for name, _, _, _ in EDGES:
         label, lo, hi = LABELS[name]
         for e, v in (("lo", lo), ("hi", hi)):

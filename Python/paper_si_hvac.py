@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """SI figure: room-air experiments of 2 Nov (window, air conditioning, air purifier).
 
-Cycles of the N validation (held-out model for 2 Nov) from 09:30 on (laser realigned at 09:24).
+Cycles of the N validation (held-out model for 2 Nov) from 09:30 on (laser realigned at 09:27).
 (a) N and N_CPC, (b) N / N_CPC per cycle; shaded: air conditioning off; bars on top: window open,
 air purifier on. States from the experiment log.
 

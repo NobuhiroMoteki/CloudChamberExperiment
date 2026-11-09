@@ -31,6 +31,7 @@ N_GRID = np.logspace(np.log10(50.0), np.log10(3e4), 37)  # [cm-3]
 N_QW = 40
 QW_SCAN = (2.0, 3.0, 4.0, 6.0, 9.0)  # [g/kg] lowest N with a measurable cloud at 23 C
 N_SCAN = np.logspace(1.5, 4.0, 51)  # [cm-3]
+SI_WIDTH = 165 * ps.MM  # [inch] text width of the supplement (article, 25-mm margins)
 LABEL_X = 0.8  # contour labels on the column at this fraction of the qw axis (clear of the marked box)
 KAPPA = 0.1
 TR_ONSET = 0.985
@@ -108,13 +109,14 @@ def main():
               f"{np.nanmax(np.where(cloud[:, -1:].astype(bool), dcut[:, -1:], np.nan)):.1f} nm (cloud only)")
 
     ps.apply()
-    fig, axs = plt.subplots(2, len(T_INIS), figsize=(ps.DOUBLE, 115 * ps.MM), sharex="col", sharey=True)
-    fig.subplots_adjust(left=0.07, right=0.9, bottom=0.1, top=0.93, hspace=0.15, wspace=0.1)
+    # SI text width (about 165 mm): one row per T_ini; left column peak supersaturation, right column cutoff
+    fig, axs = plt.subplots(len(T_INIS), 2, figsize=(SI_WIDTH, 190 * ps.MM), sharey=True)
+    fig.subplots_adjust(left=0.1, right=0.98, bottom=0.14, top=0.965, hspace=0.42, wspace=0.12)
     lev_s = [5, 10, 20, 40, 60, 80, 120, 160, 200, 300]
     lev_d = [2, 3, 4, 5, 7, 10, 14, 20]
     for j, (T, qws, smax, dcut, cloud) in enumerate(results):
         for i, (z, lev, cmap) in enumerate(((smax * 100, lev_s, "Blues"), (dcut, lev_d, "Oranges_r"))):
-            ax = axs[i, j]
+            ax = axs[j, i]
             zz = np.where(cloud.astype(bool), z, np.nan)
             cf = ax.contourf(qws, N_GRID, zz.T, levels=lev, cmap=cmap, extend="both")
             cs = ax.contour(qws, N_GRID, zz.T, levels=lev, colors=INK, linewidths=0.4)
@@ -128,18 +130,18 @@ def main():
                                            np.diff(EVAL["n"])[0], fill=False, ec=INK, lw=1.2, ls="--"))
             ax.set_yscale("log")
             tidy(ax)
+            ax.set_title(f"$\\mathit{{T}}_\\mathrm{{ini}}$ = {T - 273.15:.0f} °C", fontsize=8)
+            ax.set_xlabel(r"$\mathit{q}_\mathit{w}$ (g kg$^{-1}$)")
             if i == 0:
-                ax.set_title(f"$\\mathit{{T}}_\\mathrm{{ini}}$ = {T - 273.15:.0f} °C", fontsize=8)
-            else:
-                ax.set_xlabel(r"$\mathit{q}_\mathit{w}$ (g kg$^{-1}$)")
-            if j == 0:
                 ax.set_ylabel(r"$\mathit{N}$ (cm$^{-3}$)")
-            ps.panel(ax, "abcdef"[i * len(T_INIS) + j], x=-0.12 if j else -0.25)
-            if j == len(T_INIS) - 1:
-                cax = fig.add_axes([0.915, ax.get_position().y0, 0.015, ax.get_position().height])
-                cb = fig.colorbar(cf, cax=cax)
+            ps.panel(ax, "abcdef"[i * len(T_INIS) + j], x=-0.2 if i == 0 else -0.1)
+        if j == len(T_INIS) - 1:
+            for i in range(2):
+                pos = axs[j, i].get_position()
+                cax = fig.add_axes([pos.x0, 0.055, pos.width, 0.012])
+                cb = fig.colorbar(axs[j, i].collections[0], cax=cax, orientation="horizontal")
                 cb.set_label("Peak supersaturation (%)" if i == 0 else
-                             f"Cutoff dry diameter,\n$\\mathit{{\\kappa}}$ = {KAPPA} (nm)")
+                             f"Cutoff dry diameter, $\\mathit{{\\kappa}}$ = {KAPPA} (nm)")
     ps.save(fig, "fig_s_envelope")
 
 

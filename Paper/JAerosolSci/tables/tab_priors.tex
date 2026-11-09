@@ -11,17 +11,17 @@ Chamber state & Initial temperature $T_\mathrm{ini}$ & $\mathcal{U}(288, 303)$\,
  & Pressure curve & recorded curve & drop and time scaled by $\mathcal{U}(0.95, 1.05)$; \\
  & & of a training day & $\Delta t_\mathrm{open}$ shifted by $\mathcal{U}(-0.05, 0.05)$\,s \\
 \midrule
-Aerosol & Geometric mean dry radius $r_g$ & log-$\mathcal{U}(20, 80)$\,nm & lognormal, 12 bins; nominal 40\,nm \\
- & Geometric standard deviation $\sigma_g$ & $\mathcal{U}(1.4, 2.2)$ & nominal 1.8 \\
- & Hygroscopicity $\kappa$ & $\mathcal{U}(0.1, 0.7)$ & nominal 0.3 \\
+Aerosol & Geometric mean dry radius $r_g$ & log-$\mathcal{U}(20, 80)$\,nm & lognormal, 12 bins; reference 40\,nm \\
+ & Geometric standard deviation $\sigma_g$ & $\mathcal{U}(1.4, 2.2)$ & reference 1.8 \\
+ & Hygroscopicity $\kappa$ & $\mathcal{U}(0.1, 0.7)$ & reference 0.3 \\
 \midrule
-Growth & Condensation coefficient $\alpha_c$ & log-$\mathcal{U}(0.1, 1)$ & nominal 0.3 \\
- & Relative droplet-radius spread $s$ & log-$\mathcal{U}(0.015, 0.10)$ & at $a = 0.69$\,\textmu m; nominal 0.04 \\
- & Floor of $s$ & log-$\mathcal{U}(0.003, 0.03)$ & nominal 0.01 \\
+Growth & Condensation coefficient $\alpha_c$ & log-$\mathcal{U}(0.1, 1)$ & reference 0.3 \\
+ & Relative droplet-radius spread $s$ & log-$\mathcal{U}(0.015, 0.10)$ & at $a = 0.69$\,\textmu m; reference 0.04 \\
+ & Lower bound of $s$ & log-$\mathcal{U}(0.003, 0.03)$ & reference 0.01 \\
 \midrule
-Signal & Smoothing of Tr (Gaussian s.d.) & $\mathcal{U}(0, 0.05)$\,s & \\
+Signal & Width $\sigma_b$ of the smoothing of Tr & $\mathcal{U}(0, 0.05)$\,s & Eq.~(\ref{eq:smoothing}) \\
  & Error of the valve-opening onset $t_0$ & $\mathcal{N}(0, 0.01)$\,s & \\
  & Relative gain of Tr & $1 + \mathcal{N}(0, 3\times10^{-4})$ & \\
- & Noise s.d. of Tr & log-$\mathcal{U}(10^{-4.5}, 10^{-3.5})$ & white, 100\,Hz \\
+ & Noise standard deviation of Tr & log-$\mathcal{U}(10^{-4.5}, 10^{-3.5})$ & white, 100\,Hz \\
 \bottomrule
 \end{tabular}

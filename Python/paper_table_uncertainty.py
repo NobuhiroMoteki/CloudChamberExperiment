@@ -29,7 +29,7 @@ NUISANCE = [(r"Condensation coefficient $\alpha_c$ (0.1, 1)", "alpha_c"),
             (r"Geometric standard deviation $\sigma_g$ (1.4, 2.2)", "sigma_g"),
             (r"Hygroscopicity $\kappa$ (0.1, 0.7)", "kappa"),
             (r"Droplet-radius spread (0.015, 0.10)", "spread"),
-            (r"Floor of the spread (0.003, 0.03)", "spread_floor")]
+            (r"Lower bound of the spread (0.003, 0.03)", "spread_floor")]
 SENS = os.path.join(HERE, "models", "nuisance_sensitivity.csv")
 CPC_UNC = 0.05  # two CPCs agree within 5 %
 INPUT = os.path.join(HERE, "models", "input_sensitivity.csv")  # paper_input_sensitivity.py

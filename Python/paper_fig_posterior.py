@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Paper figure: joint posterior of (qw, N) for four recorded cycles (paper Sect. 4.3).
 
-Each cycle is analysed by the leave-one-day-out model of its day (as in the validation). Top: the
+Each cycle is analysed by the leave-one-day-out model of its day (as in the validation). The four
+cycles are arranged 2 x 2 at the text width (140 mm). For each cycle, upper panel: the
 measured transmittance Tr = I/I0 after the onset t0 of the pressure drop with the inference window
-t_s - 0.1 ... t_s + 0.9 s. Bottom: N_SAMPLES draws of the neural spline flow q(qw, log10 N | y),
+t_s - 0.1 ... t_s + 0.9 s; lower panel: N_SAMPLES draws of the neural spline flow q(qw, log10 N | y),
 shown as a kernel density with the contours enclosing 50 % and 90 % of the posterior mass, the
 posterior median and the hygrometer and CPC values of the cycle (dashed lines; error bars: hygrometer
 +-0.2 K in dew point, i.e. +-HYG_REL in qw, and CPC +-CPC_REL). N per kg of dry air is converted to
@@ -74,9 +75,13 @@ def main():
     data = [load(f, a, b) for _, f, a, b, _, _ in DAYS]
     posts = [torch.load(os.path.join(HERE, "models", m), weights_only=False) for m in MODELS]
     ps.apply()
-    fig, axs = plt.subplots(2, len(TARGETS), figsize=(ps.DOUBLE, 100 * ps.MM),
-                            gridspec_kw=dict(height_ratios=[1, 1.5]))
-    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.17, top=0.94, hspace=0.42, wspace=0.38)
+    fig = plt.figure(figsize=(ps.ONE_HALF, 140 * ps.MM))  # fits one page with the caption
+    outer = fig.add_gridspec(2, 2, left=0.12, right=0.98, bottom=0.15, top=0.955, hspace=0.36, wspace=0.32)
+    axs = np.empty((2, len(TARGETS)), dtype=object)  # row 0: Tr, row 1: posterior
+    for j in range(len(TARGETS)):
+        inner = outer[j // 2, j % 2].subgridspec(2, 1, height_ratios=[1, 1.9], hspace=0.6)
+        axs[0, j] = fig.add_subplot(inner[0])
+        axs[1, j] = fig.add_subplot(inner[1])
     torch.manual_seed(0)
     for j, (day, target) in enumerate(TARGETS):
         row = pick(data, day, target)
@@ -90,10 +95,10 @@ def main():
         ax.plot(t[m], tr[m], color=INK, lw=0.6)
         ax.set_xlim(0, T_MAX)
         ax.set_xlabel(r"$\mathit{t} - \mathit{t}_0$ (s)")
-        if j == 0:
+        if j % 2 == 0:
             ax.set_ylabel("Tr")
         ax.set_title(f"{DAYS[day][0]} {row.datetime[11:16]}", fontsize=8)
-        ps.panel(ax, "abcd"[j], x=-0.3, y=1.04)
+        ps.panel(ax, "aceg"[j], x=-0.25, y=1.06)
         tidy(ax)
         # (bottom) joint posterior
         s = posts[day].sample((N_SAMPLES,), x=torch.tensor(x, dtype=torch.float32),
@@ -120,12 +125,12 @@ def main():
         ax.set_xlim(min(qlo - pq, qr * (1 - 1.5 * HYG_REL)), max(qhi + pq, qr * (1 + 1.5 * HYG_REL)))
         ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0f}"))
         ax.set_xlabel(r"$\mathit{q}_\mathit{w}$ (g kg$^{-1}$)")
-        if j == 0:
+        if j % 2 == 0:
             ax.set_ylabel(r"$\mathit{N}$ (cm$^{-3}$)")
         r = np.corrcoef(qw, lgn)[0, 1]
         ax.text(0.97, 0.04, f"$\\mathit{{r}}$ = {r:+.2f}".replace("-", "\u2212"), transform=ax.transAxes, ha="right",
                 fontsize=7, color=INK2)
-        ps.panel(ax, "efgh"[j], x=-0.3, y=1.02)
+        ps.panel(ax, "bdfh"[j], x=-0.25, y=1.02)
         tidy(ax)
         print(f"{row.datetime}: CPC {row.cpc:.0f}, N med {10**np.median(lgn):.0f} "
               f"(90 % {10**np.percentile(lgn, 5):.0f}-{10**np.percentile(lgn, 95):.0f}); hyg {row.qw_ref_td_gkg:.2f}, "
@@ -136,7 +141,7 @@ def main():
                Line2D([], [], ls="none", marker="+", ms=8, mew=1.2, color=INK2, label="Posterior median"),
                axs[1, 0].get_legend_handles_labels()[0][-1]]
     fig.legend(handles=handles, labels=[h.get_label() for h in handles[:3]] + ["Hygrometer and CPC"],
-               loc="lower center", ncol=4, frameon=False, fontsize=7)
+               loc="lower center", ncol=2, frameon=False, fontsize=7)
     ps.save(fig, "fig_posterior")
 
 

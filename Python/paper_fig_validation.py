@@ -3,8 +3,8 @@
 
 Leave-one-day-out estimates and cycles as in paper_fig_n_validation.py (DAYS, load): neither the CPC
 nor the hygrometer of the held-out day enters the estimates.
-(a) qw with the 90 % credible band and qw / qw_hyg, (b) qw scatter,
-(c) N with the 90 % credible band and N / N_CPC, (d) N scatter.
+(a) qw with the 90 % credible band, (b) N with the 90 % credible band and N / N_CPC,
+(c) qw scatter, (d) N scatter; laid out at the text width (140 mm).
 
 Usage: python paper_fig_validation.py  -> Paper/JAerosolSci/figures/fig_validation.{pdf,png}
 """
@@ -22,7 +22,7 @@ N_LO, N_HI = 100, 15000  # [cm-3] scatter axes
 
 def time_series(ax, axr, data, y, lo, hi, ref, ref_label, ylim, ylabel, rlim, rticks, band, rlabel,
                 days_in_legend=True):
-    """Upper panel: reference (thick gray) under the chamber with its band; lower panel: ratio."""
+    """Upper panel: reference (thick gray) under the chamber with its band; lower panel (axr, optional): ratio."""
     for lab, d, col, mk in data:
         seg = (d.t.diff() > pd.Timedelta("5min")).cumsum()  # do not join across gaps
         for k, (_, g) in enumerate(d.groupby(seg)):
@@ -31,12 +31,15 @@ def time_series(ax, axr, data, y, lo, hi, ref, ref_label, ylim, ylabel, rlim, rt
             ax.fill_between(g.t, g[lo], g[hi], color=col, alpha=0.3, lw=0)
             ax.plot(g.t, g[y], color=col, lw=0.7,
                     label=f"Chamber, {lab}" if k == 0 and days_in_legend else None)
-        axr.scatter(d.t, d[y] / d[ref], s=1.5, color=col, lw=0, rasterized=True)
+        if axr is not None:
+            axr.scatter(d.t, d[y] / d[ref], s=1.5, color=col, lw=0, rasterized=True)
     ax.set_ylim(*ylim)
     ax.set_ylabel(ylabel)
     ax.legend(loc="upper left", frameon=False, ncol=4, handlelength=1.5, columnspacing=1.2)
     plt.setp(ax.get_xticklabels(), visible=False)
     tidy(ax)
+    if axr is None:
+        return
     axr.axhline(1.0, color=INK, lw=0.8)
     for f in (1 - band, 1 + band):
         axr.axhline(f, color=INK2, lw=0.6, ls="--")
@@ -69,36 +72,38 @@ def main():
     rq = a.qw_gkg / a.qw_ref_td_gkg
     rn = a.nd_cm3 / a.cpc
     ps.apply()
-    fig = plt.figure(figsize=(ps.DOUBLE, 170 * ps.MM))
-    gs = fig.add_gridspec(5, 2, width_ratios=[2.1, 1], height_ratios=[2.6, 1, 0.4, 2.6, 1], wspace=0.3,
-                          hspace=0.12, left=0.075, right=0.985, bottom=0.075, top=0.965)
-    ax_q = fig.add_subplot(gs[0, 0])
-    ax_qr = fig.add_subplot(gs[1, 0], sharex=ax_q)
-    ax_n = fig.add_subplot(gs[3, 0], sharex=ax_q)
-    ax_nr = fig.add_subplot(gs[4, 0], sharex=ax_q)
+    # text width (140 mm): the two time series on top of each other (ratio only for N), scatter plots below
+    fig = plt.figure(figsize=(ps.ONE_HALF, 152 * ps.MM))
+    gs = fig.add_gridspec(6, 2, height_ratios=[1.75, 0.14, 1.75, 0.8, 0.62, 3.75], hspace=0.12,
+                          wspace=0.42, left=0.105, right=0.975, bottom=0.075, top=0.975)
+    ax_q = fig.add_subplot(gs[0, :])
+    ax_qr = None
+    ax_n = fig.add_subplot(gs[2, :], sharex=ax_q)
+    ax_nr = fig.add_subplot(gs[3, :], sharex=ax_q)
 
     time_series(ax_q, ax_qr, data, "qw_gkg", "qw_lo", "qw_hi", "qw_ref_td_gkg", "Hygrometer", (QW_LO, 10.8),
                 r"$\mathit{q}_\mathit{w}$ (g kg$^{-1}$)", (0.9, 1.1), [0.95, 1.0, 1.05], 0.05, r"$\mathit{q}_\mathit{w}/\mathit{q}_{\mathit{w},\mathrm{hyg}}$")
     time_series(ax_n, ax_nr, data, "nd_cm3", "nd_cm3_lo", "nd_cm3_hi", "cpc", "CPC", (N_LO, 40000),
-                r"$\mathit{N}$ (cm$^{-3}$)", (0.6, 1.4), [0.6, 0.8, 1.0, 1.2, 1.4], 0.1, r"$\mathit{N}/\mathit{N}_\mathrm{CPC}$",
+                r"$\mathit{N}$ (cm$^{-3}$)", (0.6, 1.4), [0.6, 1.0, 1.4], 0.1, r"$\mathit{N}/\mathit{N}_\mathrm{CPC}$",
                 days_in_legend=False)  # colours of the days as in (a)
     ax_n.set_yscale("log")
     ax_n.set_ylim(N_LO, 40000)  # room for the legend
     log_ticks(ax_n.yaxis)
-    plt.setp(ax_qr.get_xticklabels(), visible=False)  # one time axis, at the bottom
+    for ax in (ax_q, ax_n):
+        plt.setp(ax.get_xticklabels(), visible=False)
     ax_nr.xaxis.set_major_locator(mdates.HourLocator(byhour=[0, 12]))
     ax_nr.xaxis.set_minor_locator(mdates.HourLocator(byhour=[6, 18]))
     ax_nr.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M\n%-d %b"))
-    ps.panel(ax_q, "a", x=-0.075)
-    ps.panel(ax_n, "c", x=-0.075)
+    ps.panel(ax_q, "a", x=-0.09)
+    ps.panel(ax_n, "b", x=-0.09)
 
-    ax = fig.add_subplot(gs[0:2, 1])
+    ax = fig.add_subplot(gs[5, 0])
     scatter(ax, data, "qw_ref_td_gkg", "qw_gkg", QW_LO, QW_HI, 0.05,
             f"$\\mathit{{q}}_\\mathit{{w}}/\\mathit{{q}}_{{\\mathit{{w}},\\mathrm{{hyg}}}}$ = {rq.median():.3f}\n(IQR {rq.quantile(.25):.3f}–{rq.quantile(.75):.3f})\n"
             f"$\\mathit{{r}}$ = {a.qw_gkg.corr(a.qw_ref_td_gkg):.3f}, $\\mathit{{n}}$ = {len(a)}",
             r"Hygrometer, $\mathit{q}_{\mathit{w},\mathrm{hyg}}$ (g kg$^{-1}$)", r"Cloud chamber, $\mathit{q}_\mathit{w}$ (g kg$^{-1}$)")
-    ps.panel(ax, "b", x=-0.27)
-    ax = fig.add_subplot(gs[3:5, 1])
+    ps.panel(ax, "c", x=-0.24)
+    ax = fig.add_subplot(gs[5, 1])
     ax.set_xscale("log")
     ax.set_yscale("log")
     scatter(ax, data, "cpc", "nd_cm3", N_LO, N_HI, 0.1,
@@ -106,7 +111,7 @@ def main():
             f"$\\mathit{{r}}$ = {a.nd_cm3.corr(a.cpc):.3f}, $\\mathit{{n}}$ = {len(a)}", r"CPC, $\mathit{N}_\mathrm{CPC}$ (cm$^{-3}$)", r"Cloud chamber, $\mathit{N}$ (cm$^{-3}$)")
     log_ticks(ax.xaxis)
     log_ticks(ax.yaxis)
-    ps.panel(ax, "d", x=-0.27)
+    ps.panel(ax, "d", x=-0.3)
 
     ps.save(fig, "fig_validation")
     print(f"n {len(a)}, qw/hyg {rq.median():.4f} (IQR {rq.quantile(.25):.4f}-{rq.quantile(.75):.4f}), "

@@ -15,7 +15,7 @@ import pandas as pd
 import paper_style as ps
 from cloudchamber import sbi_shape4 as ss4
 from cloudchamber.activation import simulate_activation
-from cloudchamber.sbi_shape import shape_features
+from cloudchamber.sbi_shape import TR_THRESHOLD, shape_features
 from cloudchamber.sbi_shape2 import OUT_DT, SHAPE_OFFSETS, T_END
 from cloudchamber.sbi_shape3 import L_PATH3
 from cloudchamber.shape_estimator import cycle_x
@@ -72,11 +72,16 @@ def main():
         s = model(row, p_ini, T_ini, info)
         m = (t >= T_MIN) & (t <= T_MAX)
         mm = (s["t"] >= T_MIN) & (s["t"] <= T_MAX)
-        f = shape_features(t, tr, onset_level=1 - 0.001, offsets=SHAPE_OFFSETS)
+        f = shape_features(t, tr, onset_level=1 - 0.001, offsets=SHAPE_OFFSETS)  # only for the printout
+        t_s = row.t_s_shape  # onset of the extinction as in the analysis [s after t0]
         for ax in axs[:, j]:
-            if f is not None:
-                ax.axvspan(f[0] + SHAPE_OFFSETS[0], f[0] + SHAPE_OFFSETS[-1], color=ps.GRID, alpha=0.8, lw=0,
-                           label="Inference window" if ax is axs[0, j] else None)
+            ax.axvspan(t_s + SHAPE_OFFSETS[0], t_s + SHAPE_OFFSETS[-1], color=ps.GRID, alpha=0.8, lw=0,
+                       label="Inference window" if ax is axs[0, j] else None)
+            ax.axvline(t_s, color=INK2, lw=0.7, ls="--", zorder=1)
+        axs[0, j].axhline(TR_THRESHOLD, color=INK2, lw=0.6, ls=":", zorder=1)
+        axs[0, j].text(0.05, TR_THRESHOLD, f"Tr = {TR_THRESHOLD}", va="bottom", fontsize=6.5, color=INK2)
+        axs[0, j].text(t_s - 0.04, 0.62, r"$\mathit{t}_\mathrm{s}$", transform=axs[0, j].get_xaxis_transform(),
+                       ha="right", fontsize=8, color=INK)
         axs[0, j].plot(t[m], tr[m], color=INK, lw=0.6, label="Measured")
         axs[0, j].plot(s["t"][mm], s["Tr"][mm], color=ps.DAY_COLORS[0], lw=1.2, label="Model, posterior median")
         axs[1, j].axhline(0, color=INK2, lw=0.4)
