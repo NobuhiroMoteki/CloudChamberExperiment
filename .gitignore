@@ -36,3 +36,6 @@ Paper/JAerosolSci/refs_pdf/
 # Published paper kept as a format reference (copyrighted; local only)
 Paper/JAerosolSci/Moteki_etal_2026_JAerosolSCi_BC_RefractiveIndex.pdf
 
+# Submission package: PDFs and the source zip are regenerated copies (texts are kept)
+Paper/JAerosolSci/submission/*.pdf
+Paper/JAerosolSci/submission/*.zip
