@@ -37,22 +37,21 @@ laser-extinction curve of an expansion cloud by simulation-based inference}
 
 \begin{abstract}
 Condensation particle counters (CPCs) measure the total particle number concentration $N$ with a
-working fluid such as butanol or water, which must be replenished and takes up water from humid
+working fluid such as butanol or water. The fluid must be replenished, and butanol takes up water from humid
 samples. We propose a working-fluid-free method that infers $N$ in real time with a homemade
-apparatus of affordable general-purpose parts. In each 60-s cycle, sample air is expanded
-in a flask, and the laser extinction by the cloud droplets that form on the particles
-from the sample's own water vapor is recorded. The signal is interpreted by a physical model of the
-expansion, the activation and growth of the droplets and the light reaching the photodiode, including
+apparatus built from affordable general-purpose parts. In each 60-s cycle, sample air is expanded in a
+flask. Cloud droplets form on the particles from the sample's own water vapor and attenuate a laser beam. A
+physical model interprets the recorded transmittance. It describes the expansion, the activation and growth
+of the droplets and the light reaching the photodiode, including
 forward scattering. Neural posterior estimation inverts the model for $N$ and the water vapor mixing
 ratio $q_w$. It averages over the unmeasured particle and instrument properties and needs no
 calibration against a reference particle counter or hygrometer. In 52\,h of indoor measurements
-(3114 cycles), the inferred $N$ agreed with a CPC (TSI 3022A) to a median ratio of 0.995
-(interquartile range 0.950--1.046) with Pearson's $r = 0.997$ over 370--9500\,cm$^{-3}$. The 3-h
-medians of this ratio ranged from 0.95 to 1.09. The inferred $q_w$ agreed with a chilled-mirror
-hygrometer to a median ratio of 0.997. The largest uncertainties are the optical path and the
-condensation coefficient. In theory, soluble particles activate down to dry diameters at or below
-the 7-nm
-50\,\% cutoff of the CPC. The method could enable monitoring of $N$ at many locations without a
+(3114 cycles), the inferred $N$ agreed with a CPC (TSI 3022A). Their ratio had a median of 0.995
+(interquartile range 0.950--1.046), and Pearson's $r$ was 0.997 over 370--9500\,cm$^{-3}$. The 3-h
+medians of this ratio ranged from 0.95 to 1.09. The inferred $q_w$ agreed with a chilled-mirror hygrometer
+(median ratio 0.997). The largest sources of uncertainty are the optical path and the
+condensation coefficient. In theory, the chamber activates soluble particles as small as the 7-nm 50\,\%
+cutoff diameter of the CPC. The method could enable monitoring of $N$ at many locations without a
 working fluid.
 \end{abstract}
 
@@ -70,23 +69,22 @@ Laser extinction \sep Simulation-based inference \sep Working-fluid-free
 The number concentration of particles in air is dominated by ultrafine particles, 100\,nm or smaller
 in diameter \citep{hei2013ultrafine,who2021global}. Because of their small size, they are inhaled
 deeply into the lungs and can pass into the systemic circulation \citep{ohlwein2019health}. Their
-health effects are under study \citep{ohlwein2019health}, and in urban areas their number
-varies strongly in space and time \citep{kumar2014ultrafine}.
+health effects are under study \citep{ohlwein2019health}. In urban areas, their number concentration varies
+strongly in space and time \citep{kumar2014ultrafine}.
 Yet they contribute little to the particle mass on which air-quality standards are based
 \citep{hei2013ultrafine}.
-The World Health Organization therefore recommends as good practice that the particle number
-concentration above a lower size limit of 10\,nm or less be monitored alongside the regulated
-pollutants \citep[Sect.~4.3]{who2021global}.
-It characterizes 24-h means below 1000\,cm$^{-3}$ as low and 24-h means above 10\,000\,cm$^{-3}$
-(or 1-h means above 20\,000\,cm$^{-3}$) as high.
+As good practice, the World Health Organization therefore recommends monitoring the particle number
+concentration alongside the regulated pollutants, with a lower size limit of 10\,nm or less
+\citep[Sect.~4.3]{who2021global}. It regards 24-h means below 1000\,cm$^{-3}$ as low, and 24-h means above
+10\,000\,cm$^{-3}$ or 1-h means above 20\,000\,cm$^{-3}$ as high.
 Such monitoring needs many instruments that run
 unattended for long periods.
 
 The standard instrument for the total particle number concentration $N$ is the condensation particle
-counter (CPC). In a CPC, particles grow by condensation of a supersaturated vapor to optically
-countable droplets \citep{stolzenburg1991ultrafine}.
-CPCs fall into two classes by the way the supersaturation is produced \citep{mcmurry2000history}.
-In most continuous-flow CPCs, a steadily flowing sample is supersaturated by heat and vapor transfer in a
+counter (CPC). In a CPC, a supersaturated vapor condenses on the particles and grows them into droplets that
+can be counted optically \citep{stolzenburg1991ultrafine}.
+CPCs fall into two classes according to how they produce the supersaturation \citep{mcmurry2000history}.
+Most continuous-flow CPCs supersaturate a steadily flowing sample by heat and vapor transfer in a
 temperature-controlled growth tube \citep{agarwal1980continuous}. Expansion CPCs supersaturate a batch of
 the sample by an adiabatic expansion and observe the droplets formed in each expansion cycle
 \citep{miller1982supersaturation}.
@@ -95,24 +93,20 @@ Most CPCs in use today are of the continuous-flow type
 They count single droplets, and the
 number concentration follows from the counts and the sample flow. Their counting efficiency near the
 cutoff must be calibrated \citep{iso27891}. They need a working
-fluid, usually butanol, isopropanol or water \citep{sem2002design,hering2005laminar}. Alcohols take up
-water from humid samples: isopropanol does so within a few hours at 50\,\% relative humidity
-\citep{sem2002design}, and the butanol of the TSI 3010 CPC should be drained and replaced weekly for the
-same reason
-\citep{tsi2002cpc3010}. Water vapor of a humid sample can also condense in the condenser and
-contaminate the butanol, changing the lower counting limit. Some recent CPC models remove this water at
-the cost of a
-higher butanol consumption \citep{tsi2017cpc3750}.
+fluid, usually butanol, isopropanol or water \citep{sem2002design,hering2005laminar}. Alcohols take up water
+from humid samples. Isopropanol does so within a few hours at 50\,\% relative humidity
+\citep{sem2002design}. For the same reason, the butanol of the TSI 3010 CPC should be drained and replaced
+weekly \citep{tsi2002cpc3010}. Water vapor from a humid sample can also condense in the condenser and
+contaminate the butanol. This changes the lower counting limit. Some recent CPC models remove this water but
+consume more butanol \citep{tsi2017cpc3750}.
 Water-based CPCs that recover water from the sample air can run for weeks without
-refilling under mild conditions, but they still rely on a wetted wick and on temperature-controlled
-growth stages \citep{hering2019magic}. A recent affordable water-based particle counter of the expansion type
-humidifies the sample through water-jacketed Nafion walls and optically counts the activated
-droplets individually in each measurement cycle
-\citep{hering2025affordable}.
-Recently proposed affordable CPCs
-\citep{yoo2019mems,collins2026opensource} also rely on a working fluid and on the precise
-control of temperatures. Portable diffusion chargers avoid the working fluid but infer the number
-from the charge acquired by the particles with an assumed dependence on their size
+refilling under mild conditions. However, they still need a wetted wick and temperature-controlled growth
+stages \citep{hering2019magic}. \citet{hering2025affordable} recently described an affordable water-based
+counter of the expansion type. It humidifies the sample through water-jacketed Nafion walls and optically
+counts the activated droplets one by one in each measurement cycle. Other affordable CPCs proposed recently
+\citep{yoo2019mems,collins2026opensource} also rely on a working fluid and on precise temperature control.
+Portable diffusion chargers need no working fluid. They infer the number from the charge that the particles
+acquire. This requires an assumed relation between the charge and the particle size
 \citep{fierz2011design,asbach2024partector}.
 \citet{gehin2004theoretical} proposed a continuous-flow particle counter in which the sample expands
 in a nozzle and its own water vapor condenses on the particles. The proposal was a theoretical design.
@@ -122,32 +116,31 @@ Expansion CPCs have the longer history and date back to the counter of \citet{ai
 Using an expansion chamber, \citet{wilson1897condensation} found that drops also form in particle-free
 air above a saturation ratio of about 4. Expansion CPCs must therefore keep the
 maximum saturation ratio below this limit.
-In the expansion particle counter of \citet{nolan1946calibration} the attenuation of a light beam by
-the cloud was converted to a number concentration with a calibration table.
+The expansion particle counter of \citet{nolan1946calibration} converted the attenuation of a light beam by
+the cloud to a number concentration with a calibration table.
 The table was built by successive dilution and anchored to direct droplet counts with Aitken counters
 \citep{nolan1946calibration,pollak1959calibration}.
 Automated versions that read the light scattered by the cloud remained in routine use for decades
 \citep{skala1963new,mcmurry2000history}.
 
-The calibration was needed because the extinction of the cloud depends not only on the number of
-droplets but also on their size, and the size depends on the number because the droplets compete
-for the available vapor \citep{wagner1975interdependence,wagner1975experimental}.
-Later expansion CPCs avoided the calibration by reading the droplet size from Mie theory.
-At the University of Vienna this principle was implemented as the constant-angle Mie scattering
+The calibration was needed because the extinction of the cloud depends on both the number and the size of
+the droplets. The size in turn depends on the number, because the droplets compete for the available vapor
+\citep{wagner1975interdependence,wagner1975experimental}.
+Later expansion CPCs avoided the calibration by determining the droplet size with Mie theory. At the
+University of Vienna, this principle was implemented as the constant-angle Mie scattering
 method \citep{wagner1985cams}. The versatile size analyzing nuclei counter (vSANC) extends it to
 several scattering angles \citep{pinterich2016vsanc}.
-The extrema of the scattered light give the droplet size, and their height relative to the
-transmitted light gives the number concentration without a reference particle counter.
+The extrema of the scattered light give the droplet size. Their height relative to the transmitted light
+gives the number concentration without a reference particle counter.
 The number concentration can also be obtained from this size and the extinction of the cloud
-\citep{szymanski1990absolute}. The expansion-type Kelvin spectrometer uses the same principle
-\citep{hollander2002theoretical}. It is an expansion CPC operated at controlled supersaturations.
-An expansion CPC of the University of Mainz \citep{kurten2005automated} records over time the light
-scattered at 1.1--4.4$^\circ$ by the growing droplets. The signal shows successive maxima and
+\citep{szymanski1990absolute}. The expansion-type Kelvin spectrometer is an expansion CPC operated at
+controlled supersaturations. It uses the same principle \citep{hollander2002theoretical}.
+An expansion CPC of the University of Mainz \citep{kurten2005automated} records the time series of the light
+that the growing droplets scatter at 1.1--4.4$^\circ$. The signal shows successive maxima and
 minima as the droplets grow. Mie theory gives the droplet size at these extrema, and $N$
 follows from the signal height there.
 A later version with modified optics and a measured pressure drop \citep{saghafifar2009modified} no
-longer needed an empirical calibration factor, but the times of the extrema had to be preselected
-by an operator.
+longer needed an empirical calibration factor. However, an operator had to preselect the times of the extrema.
 Its authors saw this as an obstacle to unattended operation and proposed fitting a model to the
 whole intensity curve instead.
 All these particle counters saturate the sample with the vapor of a working fluid (water or another
@@ -158,37 +151,37 @@ each series of measurements \citep{kurten2005automated,saghafifar2009modified}.
 In such chambers, measured growth curves of monodisperse particles at a controlled supersaturation
 have also been inverted with a growth model to obtain the accommodation coefficients of water
 \citep{winkler2004mass}.
-Expansion CPCs that need no reference particle counter use only those prominent features of the light
-intensity recorded during droplet growth at which Mie theory robustly determines the droplet size.
+Expansion CPCs that need no reference particle counter use only prominent features of the light intensity
+recorded during droplet growth. At these features, Mie theory determines the droplet size robustly.
 This keeps the inferred number concentration independent of the growth physics.
 To our knowledge, the fit of the whole intensity curve proposed by \citet{saghafifar2009modified} has not
-been realized,
-possibly because the computational methods available at the time could not solve an inverse problem
+been realized. A possible reason is that the computational methods available at the time could not solve an
+inverse problem
 that depends on the growth physics and on unmeasured properties of the particles and of the
 instrument.
 
 Here we show that the total particle number concentration $N$ can be measured quantitatively from the
-laser-extinction curve of an expansion of sample air in a glass flask. No vapor is added to the sample.
-The curve is recorded as the transmittance $\mathrm{Tr}(t)$ of the beam.
+extinction curve of a laser beam recorded during an expansion of sample air in a glass flask. No vapor is
+added to the sample. We record the curve as the transmittance $\mathrm{Tr}(t)$ of the beam.
 The method needs no working fluid, no calibration against a reference particle counter or
 hygrometer and no optics beyond a laser and one photodiode.
-Because nothing is added to the sample, the supersaturation reached depends on its unknown water
-vapor mixing ratio $q_w$, which is therefore inferred together with $N$.
-The first second of the extinction curve is used point by point instead of selected features.
-It is interpreted by a physical model of the expansion and of the activation, growth and extinction of
-the droplets, including the light that the droplets scatter into the photodiode.
-The onset of the extinction carries $q_w$, and the spacing of the maxima of the extinction carries the
-droplet size and hence $N$ (Sect.~\ref{sec:info}).
+Because nothing is added to the sample, the supersaturation depends on its unknown water vapor mixing ratio
+$q_w$. We therefore infer $q_w$ together with $N$.
+The inference uses the first second of the extinction curve in steps of 10\,ms, not selected features. A
+physical model of the expansion and of the activation, growth and extinction of the droplets interprets the
+curve. The model includes the light that the droplets scatter into the photodiode.
+The onset of the extinction depends on $q_w$. The depth of the curve and the spacing of its maxima depend on
+$N$ (Sect.~\ref{sec:info}).
 The inferred $N$ and $q_w$ depend on quantities that are not measured: the condensation coefficient,
 the size distribution and hygroscopicity of the particles and imperfections of the recorded signal.
 This dependence is handled by simulation-based inference \citep{cranmer2020frontier}.
-It marginalizes these quantities over their plausible ranges, so that their uncertainty widens the
-credible intervals instead of biasing the estimates, within the assumptions of the model. A 90\,\%
+It marginalizes these quantities over their plausible ranges. As long as the model assumptions hold, their
+uncertainty then widens the credible intervals instead of biasing the estimates. A 90\,\%
 credible interval contains the true
 value with 90\,\% probability, given the model and these ranges.
-Neural networks have estimated posterior distributions in retrievals of the Earth's atmosphere
-\citep{pfreundschuh2018neural}. Exoplanet atmospheres have been retrieved by neural posterior
-estimation \citep{vasist2023neural}, the method used here.
+Neural networks have been used to estimate posterior distributions in retrievals of the Earth's atmosphere
+\citep{pfreundschuh2018neural}. Exoplanet atmospheres have been retrieved by neural posterior estimation
+\citep{vasist2023neural}. We use the same method.
 The probability of a recorded curve given $q_w$ and $N$ (the likelihood) cannot be written down for
 this forward model. Likelihood-free alternatives such as approximate Bayesian computation would need
 many new simulations for every cycle. A trained neural network (the estimator) instead returns the posterior
@@ -206,11 +199,10 @@ A laboratory characterization of the counter is left to a separate study (Sect.~
 
 The paper is organized as follows. Section~\ref{sec:instrument} describes the instrument, the
 reference instruments and the 52-h measurement of indoor air.
-Section~\ref{sec:model} describes the forward model and Sect.~\ref{sec:inversion} the inversion.
-Section~\ref{sec:evaluation} describes the evaluation design.
-Section~\ref{sec:results} gives the results, and Sect.~\ref{sec:discussion} the uncertainty budget, a
-comparison with earlier
-expansion particle counters and the limitations.
+Sections~\ref{sec:model} and~\ref{sec:inversion} describe the forward model and the inversion.
+Section~\ref{sec:evaluation} describes the evaluation design, and Sect.~\ref{sec:results} gives the results.
+Section~\ref{sec:discussion} discusses the uncertainty budget, compares the method with earlier expansion
+particle counters and states the limitations.
 
 
 \section{Instrument}
@@ -225,8 +217,8 @@ Two L-shaped stain\-less-steel tubes (1/4-in outer diameter, 0.035-in wall; inne
 pass through
 the stopper: the inlet ends about 10\,cm below the stopper (near the end of the neck) and the
 outlet about 4\,cm below the stopper.
-A third stainless tube (1/8-in outer diameter) through the stopper carries the thermistor cable
-(the tube ends sealed with caulk), and a fourth port connects the pressure sensor.
+A third stainless tube (1/8-in outer diameter, ends sealed with caulk) carries the thermistor cable through
+the stopper, and a fourth port connects the pressure sensor.
 Electrically conductive silicone tubing
 (TSI 3001788, for 1/4-in fittings; inner diameter 0.19\,in, 4.8\,mm) connects the room-air inlet
 through valve~1 to the flask (1.2\,m) and the flask
@@ -262,8 +254,9 @@ beam) by a homemade transimpedance amplifier.
 A thin-film thermistor at the tip of the third tube gives the temperature of the air sealed in the
 flask before the expansion.
 The temperature follows from the thermistor resistance by the B-parameter equation ($B = 3435$\,K).
-The resistance is measured with a voltage divider, and its value at 25\,$^\circ$C was calibrated at
-one point against the thermocouple supplied with the hygrometer (accuracy $\pm0.1$\,K;
+The resistance is measured with a voltage divider. The resistance at 25\,$^\circ$C in the B-parameter
+equation was calibrated at one point against the thermocouple supplied with the hygrometer (accuracy
+$\pm0.1$\,K;
 Sect.~\ref{sec:reference}).
 The pressure in the flask is measured by a barometric pressure sensor (Setra 276, 0--1380\,hPa
 absolute, i.e.\ 0--20\,psia, stated accuracy $\pm0.25$\,\% of full scale or $\pm3.4$\,hPa, time
@@ -294,12 +287,12 @@ recorded signals.
 
 \subsection{Pressure during the expansion}
 \label{sec:pressure}
-This section derives the analytic curve fitted to the measured pressure of each cycle, from which
-the forward model computes the cooling and hence the supersaturation (Sect.~\ref{sec:model}).
+The forward model computes the cooling, and hence the supersaturation, from an analytic curve fitted to the
+measured pressure of each cycle (Sect.~\ref{sec:model}). This section describes that curve.
 The pump evacuates the flask toward an asymptotic pressure $p_\mathrm{off}$ (Pa), and the gas left in
 the flask expands adiabatically.
-For a well-mixed flask this gives an exponential approach of the pressure $p$ to $p_\mathrm{off}$ in
-the time integral of $C(t)$, the effective pumping speed normalized by its value with the valve fully
+For a well-mixed flask, $p$ then approaches $p_\mathrm{off}$ exponentially in the time integral of $C(t)$,
+not in time itself. Here $C(t)$ is the effective pumping speed normalized by its value with the valve fully
 open (derivation in Sect.~\ref{S-sec:s-pform}).
 The pressure was first fitted with a single exponential and a valve that opens instantly at the
 valve-opening onset $t_0$ (s).
@@ -339,17 +332,16 @@ are free: $t_0$, $\Delta t_\mathrm{open}$, $\tau_1$, $\tau_2$, $f_1$ and $p_\mat
 The onset $t_0$ must precede the first clear drop of the pressure. Its upper bound is therefore the
 first time at which three consecutive samples lie more than 2\,hPa below $p_\mathrm{ini}$. Requiring
 three samples ignores single noisy samples.
-Within this bound $t_0$ is fitted from the whole quadratic start of the drop over about 0.6\,s rather
-than from a single sample.
+Within this bound, the fit determines $t_0$ from the whole quadratic start of the drop (about 0.6\,s), not
+from a single sample.
 Hereafter, times are measured from $t_0$ ($t - t_0$ on the time axes of the figures).
 The fitted $\Delta t_\mathrm{open}$ is only about 0.6\,s, although the ball valve takes about 5\,s to
 turn through 90$^\circ$. This suggests that the flow area grows quickly at the start of the turn and
 that the pump then limits the flow.
 The fitted $p_\mathrm{off}$, $\tau_2$ and $f_1$ trade off against each other, but the fitted curves
 are well determined (Sect.~\ref{S-sec:s-pressure}).
-Our inference therefore uses the values of the fitted curves $p(t)$ at fixed times rather than their
-parameters (Sect.~\ref{sec:obs}),
-and the simulations draw recorded curves to cover their variation between cycles
+The inference therefore uses the fitted curves $p(t)$ at fixed times, not their parameters
+(Sect.~\ref{sec:obs}). The simulations draw recorded curves to cover their variation between cycles
 (Sect.~\ref{sec:priors}).
 
 \begin{figure}[!htbp]
@@ -375,9 +367,7 @@ During this period the room air changed with the time of day, with the window op
 with the air conditioning and an air purifier switched on or off.
 The particle number concentration $N_\mathrm{CPC}$ measured by the CPC thus ranged over
 370--9500\,cm$^{-3}$. The water vapor mixing ratio $q_{w,\mathrm{hyg}}$ from the hygrometer ranged over
-5.8--9.2\,g\,kg$^{-1}$. Both instruments are described below.
-The air was more
-humid on 2 Nov than on the two other days.
+5.8--9.2\,g\,kg$^{-1}$, with the most humid air on 2 Nov. Both instruments are described below.
 A CPC (TSI 3022A) and a chilled-mirror
 hygrometer (DPH-203B, Tokyo Opto-Electronics, Japan) sampled the room air through their own inlets,
 5--10\,cm from the inlet of the chamber
@@ -388,8 +378,9 @@ model agreed within 5\,\%. All values of $N_\mathrm{CPC}$ were below $10^4$\,cm$
 3022A counts single particles, with a live-time correction for coincidence above $10^3$\,cm$^{-3}$
 \citep{sem2002design}.
 For each cycle, $N_\mathrm{CPC}$ is the median over the 20\,s before
-the expansion. The air sealed in the flask entered during the flushing 20--30\,s before the expansion,
-which matters only for changes within a minute. The hygrometer (thermoelectrically cooled mirror, dew-point
+the expansion. The air sealed in the flask entered during the flushing, 20--30\,s before the expansion. The
+two samples therefore differ only when the room air changes within a minute. The hygrometer
+(thermoelectrically cooled mirror, dew-point
 range $-10$ to 20\,$^\circ$C, stated accuracy $\pm0.2$\,K) sampled continuously at 0.53\,L\,min$^{-1}$.
 The reference mixing ratio $q_{w,\mathrm{hyg}}$ is computed from its dew point and $p_\mathrm{ini}$.
 
@@ -412,7 +403,7 @@ The inversion uses only an inference window of about 1\,s at the start of the ex
 (Sect.~\ref{sec:obs}).
 No air enters the flask during the expansion (valve~1 closed). The total water $q_w = q_v + q_l$
 (vapor plus liquid, per unit mass of dry air; kg\,kg$^{-1}$) and the number of particles per unit mass
-of dry air are therefore conserved. In the model $N$ is therefore this number (kg$^{-1}$). It is
+of dry air are therefore conserved. In the model, $N$ is this number (kg$^{-1}$). It is
 converted to the number per volume (cm$^{-3}$) for reporting (Sect.~\ref{sec:npe}).
 
 \subsection{Expansion thermodynamics}
@@ -451,9 +442,9 @@ equally spaced in log radius.
 All particles of bin $j$ ($j = 1, \dots, 12$) are given the dry radius
 $a_{d,j} = r_g \sigma_g^{z_j}$, where $z_j$ is the quantile of the standard normal distribution at
 the cumulative fraction $(j - 1/2)/12$, that is, the center of the bin in number.
-Each bin is followed in time as a moving bin, so that no remapping between size classes is needed,
-and equal numbers place the computation where the particles are (convergence in
-Sect.~\ref{S-sec:s-thermo}).
+Each bin keeps its particles as they grow (a moving bin), so no remapping between size classes is needed.
+Equal numbers per bin also place the computation where the particles are. The convergence is tested in
+Sect.~\ref{S-sec:s-thermo}.
 Each particle is a solution droplet of dry radius $a_d$ (m) and hygroscopicity $\kappa$
 with the equilibrium saturation ratio \citep{petters2007single}
 \begin{equation}
@@ -588,12 +579,11 @@ the curve by inverting the forward model (Sect.~\ref{sec:inversion}).
 
 \section{Inversion by simulation-based inference}
 \label{sec:inversion}
-The forward model has no closed-form likelihood: the observation depends on $q_w$ and $N$ through
-the numerical solution of Eqs.~(\ref{eq:pressure})--(\ref{eq:qeff}) and on nuisance parameters
-that are not measured (size distribution, hygroscopicity, condensation coefficient, droplet-size
-spread and signal imperfections). We therefore use simulation-based
-inference \citep{cranmer2020frontier}, of which \citet{deistler2025practical} give a practical
-introduction.
+The likelihood of a recorded curve cannot be written in closed form. The curve depends on $q_w$ and $N$
+through the numerical solution of Eqs.~(\ref{eq:pressure})--(\ref{eq:qeff}), and also on nuisance parameters
+that are not measured (size distribution, hygroscopicity, condensation coefficient, droplet-size spread and
+signal imperfections). We therefore use simulation-based inference \citep{cranmer2020frontier}.
+\citet{deistler2025practical} give a practical introduction.
 The forward model is run many times with random values of all its inputs. Together with simulated
 imperfections of the recorded signal (Sect.~\ref{sec:priors}) it forms the simulator.
 From these runs a neural network learns to return the probability distribution (the posterior) of
@@ -601,23 +591,24 @@ $\bm{\psi} = (q_w, \log_{10}N)$ given an observation vector $\bm{y}$. We call th
 estimator. The vector $\bm{y}$ collects the
 measured Tr$(t)$ and $p(t)$ curves and the initial temperature $T_\mathrm{ini}$ of a cycle
 (Sect.~\ref{sec:obs}).
-The nuisance parameters are thereby averaged over their plausible ranges (the priors).
+The estimator thereby averages over the nuisance parameters within their plausible ranges (the priors).
 
 \subsection{Observation vector}
 \label{sec:obs}
 Each recorded cycle (Fig.~\ref{fig:cycle}) is reduced to the observation vector $\bm{y}$ of 115 numbers. The
 transmittance is $\mathrm{Tr} = I/I_0$, with the photodiode signal $I$ and the reference intensity
 $I_0$ of the sealed phase (Sect.~\ref{sec:cycle}). $t_\mathrm{s}$ is the onset of the extinction
-(dashed lines in Fig.~\ref{fig:cycle}). It is the last time before Tr first reaches 0.985 at which Tr
-still lies within the noise of its baseline before $t_0$ (Sect.~\ref{S-sec:s-npe}). In the simulations the
+(dashed lines in Fig.~\ref{fig:cycle}). The baseline is the transmittance before $t_0$. The onset
+$t_\mathrm{s}$ is the last time at which Tr is still within the noise of this baseline before Tr first falls
+to 0.985 (Sect.~\ref{S-sec:s-npe}). In the simulations the
 sample saturates ($S = 1$) 0.04--0.21\,s before
 $t_\mathrm{s}$.
 The vector contains $t_\mathrm{s}$ and Tr at 101 times from $t_\mathrm{s} - 0.10$\,s to
 $t_\mathrm{s} + 0.90$\,s in steps of 10\,ms.
 These times form the inference window.
 It also contains $T_\mathrm{ini}$, $p_\mathrm{ini}$ and the pressure drop $p_\mathrm{ini} - p(t)$
-of the fitted Eq.~(\ref{eq:pressure}) at 11 fixed times from 0.25 to 4\,s rather than the fit
-parameters (Sect.~\ref{sec:pressure}).
+of the fitted Eq.~(\ref{eq:pressure}) at 11 fixed times from 0.25 to 4\,s. The pressure drops are used
+instead of the fit parameters, which trade off against each other (Sect.~\ref{sec:pressure}).
 We truncate the window at 0.9\,s after $t_\mathrm{s}$. At $N$ below 1000\,cm$^{-3}$ the measured Tr stops
 falling about 1\,s after $t_\mathrm{s}$, while the simulated Tr continues to decrease
 (Sect.~\ref{sec:limitations}).
@@ -656,12 +647,11 @@ Table~\ref{tab:priors} lists the priors. $q_w$ has a uniform distribution over 3
 $\log_{10}N$ has a uniform distribution over 8--11 with $N$ in kg$^{-1}$, which corresponds to about
 120--$1.2\times10^5$\,cm$^{-3}$ in
 the flask before the expansion. Both ranges are much wider than those of the room air. $T_\mathrm{ini}$
-and $p_\mathrm{ini}$ have uniform distributions over 288--303\,K and 980--1030\,hPa. The pressure curve
-of a simulation is that of a randomly chosen recorded cycle of the days used to train the estimator
-(Sect.~\ref{sec:lodo}), with the pressure drop
-and the time axis scaled by up to $\pm5$\,\% and the valve-opening duration $\Delta
-t_\mathrm{open}$ shifted by up to
-$\pm0.05$\,s, so that the simulations cover the pump and valve behavior actually encountered. The
+and $p_\mathrm{ini}$ have uniform distributions over 288--303\,K and 980--1030\,hPa. Each simulation uses
+the pressure curve of a randomly chosen recorded cycle from the days used to train the estimator
+(Sect.~\ref{sec:lodo}). The pressure drop and the time axis are scaled by up to $\pm5$\,\%, and the
+valve-opening duration $\Delta t_\mathrm{open}$ is shifted by up to $\pm0.05$\,s. The simulations thus cover
+the pump and valve behavior actually encountered. The
 aerosol and growth parameters span the values expected for indoor and urban air. Reported values of
 the condensation coefficient $\alpha_c$ of water range from 0.03 to 1 \citep{mozurkewich1986aerosol}.
 More recent experiments give values above 0.1 at atmospheric temperatures and close to 1 in
@@ -702,16 +692,17 @@ same procedure as for the recorded cycles (Sect.~\ref{sec:obs}).
 
 \subsection{Neural posterior estimation}
 \label{sec:npe}
-The posterior is approximated by a conditional density $q_\phi(\bm{\psi} \mid \bm{y})$, a neural spline flow
-\citep{durkan2019neural} whose parameters $\phi$ minimize
+The estimator approximates the posterior by a conditional density $q_\phi(\bm{\psi} \mid \bm{y})$. It is a
+neural spline flow \citep{durkan2019neural} whose parameters $\phi$ minimize
 \begin{equation}
 \mathcal{L}(\phi) = -\frac{1}{M}\sum_{i=1}^{M} \log q_\phi(\bm{\psi}_i \mid \bm{y}_i)
 \label{eq:npe}
 \end{equation}
 over $M$ simulated pairs ($M \approx 20\,100$, 90\,\% of the 22\,304--22\,317 training pairs, with the rest
 used to stop the training; Sect.~\ref{S-sec:s-npe}).
-A neural spline flow maps a standard normal distribution onto a flexible distribution of $\bm{\psi}$
-whose shape depends on $\bm{y}$, through a chain of invertible functions computed by a neural network.
+A neural spline flow transforms a standard normal distribution into the distribution of $\bm{\psi}$ through
+a chain of invertible functions. A neural network computes these functions from $\bm{y}$, so the shape of
+the distribution changes with $\bm{y}$.
 A spline flow can represent skewed and curved posteriors, which arise from the entanglement of $q_w$
 and $N$ (Sect.~\ref{sec:info}).
 Since the pairs are drawn from the prior and the simulator, minimizing $\mathcal{L}$ makes
@@ -772,31 +763,30 @@ lowest $N$.
 \label{sec:evaluation}
 \subsection{Data use and leave-one-day-out validation}
 \label{sec:lodo}
-Of the 3132 recorded cycles, 18 cycles during a separate aerosol-generation test near the inlets
-(2 Nov 10:00--10:18) are excluded, and all other cycles are used. In the dense plumes of that test
+We use all 3132 recorded cycles except 18 taken during a separate aerosol-generation test near the inlets (2
+Nov 10:00--10:18). In the dense plumes of that test
 the chamber and the CPC sampled different air (Sect.~\ref{S-sec:s-hvac}). The
 validation is leave-one-day-out: each of the three days (31 Oct from 12:18, 1 Nov and 2 Nov) is
-analyzed by an estimator trained without it. The recorded pressure curves drawn by its
-simulator (Sect.~\ref{sec:priors}) come from the other two days.
+analyzed by an estimator trained without it. Its simulator draws recorded pressure curves only from the
+other two days (Sect.~\ref{sec:priors}).
 The held-out day thus contributes nothing to the estimator that analyzes it.
 The estimates use neither the CPC nor the hygrometer. The hygrometer value enters only the
 sensitivity tests (Sect.~\ref{sec:sens}).
 
 \subsection{Sensitivity tests}
 \label{sec:sens}
-To see what the forward-scattering correction contributes, an estimator was trained with a forward
-model without it and evaluated on 2 Nov, the day held out from that estimator.
-It is otherwise identical to the estimator trained on 31 Oct--1 Nov.
-The nuisance parameters were tested with the forward model directly. $N$ and a time shift of up to
-$\pm0.02$\,s were fitted to each of 104 recorded curves, with $q_w$ fixed at the hygrometer value, one
-nuisance parameter at an edge of
-its prior and the others at their reference values (Sect.~\ref{S-sec:s-nuisance}). The misfit combines the
+To test the forward-scattering correction, we trained an estimator without it. It is otherwise identical to
+the estimator trained on 31 Oct--1 Nov and was evaluated on 2 Nov.
+The nuisance parameters were tested with the forward model directly. For each of 104 recorded curves, we
+fixed $q_w$ at the hygrometer value, set one nuisance parameter to an edge of its prior and the others to
+their reference values, and fitted $N$ and a time shift of up to $\pm0.02$\,s
+(Sect.~\ref{S-sec:s-nuisance}). The misfit combines the
 difference in $t_\mathrm{s}$ and the rms difference
 of Tr over the inference window. The optical path was varied in the same way
 (Sect.~\ref{S-sec:s-thermo}).
 Errors of the measured inputs were tested with the estimator itself. $T_\mathrm{ini}$ and
 $p_\mathrm{ini}$ in $\bm{y}$ were shifted by their stated accuracies, and the pressure drops were
-scaled by $\pm0.7$\,\%, the relative error of a drop of about 500\,hPa from an error of 3.4\,hPa.
+scaled by $\pm0.7$\,\%, which corresponds to an error of 3.4\,hPa in a drop of about 500\,hPa.
 The leave-one-day-out estimates were also compared with those of an estimator trained on all three
 days (Sect.~\ref{S-sec:s-models}).
 
@@ -818,10 +808,10 @@ Over the 3114 cycles (leave-one-day-out estimates; Fig.~\ref{fig:validation}a, c
 Table~\ref{tab:validation}), $q_w/q_{w,\mathrm{hyg}}$ has a median of 0.997 and an interquartile range (IQR)
 of
 0.987--1.007. The Pearson correlation coefficient of $q_w$ with $q_{w,\mathrm{hyg}}$ is $r = 0.992$. The
-chamber also follows the hygrometer through the humid afternoon of
-2 Nov (up to 9.2\,g\,kg$^{-1}$), above the range of the two other days. The hygrometer value lies
-within the 90\,\% credible interval in 96\,\% of the cycles, so these intervals are slightly
-conservative.
+agreement also holds in the humid afternoon of 2 Nov (up to 9.2\,g\,kg$^{-1}$), which was more humid than
+the two other days. The hygrometer value lies
+within the 90\,\% credible interval in 96\,\% of the cycles, so these intervals are slightly wider than
+necessary.
 
 \begin{figure}[!htbp]
 \centering
@@ -861,15 +851,15 @@ The variations and this low coverage are discussed in Sect.~\ref{sec:limitations
 \label{sec:discussion}
 \subsection{Comparability with the CPC}
 \label{sec:comparability}
-The two instruments count particles above different sizes. The comparison is meaningful only if the
-chamber activates at least the particles that the CPC counts, whose nominal 50\,\% cutoff diameter is
-7\,nm \citep{sem2002design}. With the inferred $q_w$ and $N$ and the recorded pressure curves, the
+The CPC (TSI 3022A) counts particles above its nominal 50\,\% cutoff diameter of 7\,nm
+\citep{sem2002design}. For a fair comparison, the chamber must also activate particles as small as
+7\,nm. With the inferred $q_w$ and $N$ and the recorded pressure curves, the
 forward model reaches peak supersaturations of 21--75\,\%, lower at higher $N$. By $\kappa$-Köhler
 theory these activate soluble particles down to dry diameters of about 3--7\,nm ($\kappa$ = 0.1--0.3;
 5--95\,\% of the cycles; Sect.~\ref{S-sec:s-cutoff}). Insoluble but wettable particles would need
-4.5--12\,nm. In 19\,\% of the cycles, mainly at the lowest $N$, the peak comes after the inference
-window, where the measured Tr departs from the model (Sect.~\ref{sec:obs}), so that the peak is less
-certain there. Particles that the chamber counts but the CPC does not would make $N > N_\mathrm{CPC}$.
+4.5--12\,nm. In 19\,\% of the cycles, mainly at the lowest $N$, the peak comes after the inference window.
+The peak is less certain there, because the measured Tr departs from the model (Sect.~\ref{sec:obs}). If the
+chamber also counts particles that the CPC misses, $N$ exceeds $N_\mathrm{CPC}$.
 
 During the flushing the sample reaches the flask in turbulent flow. The CPC instead draws its
 0.30\,L\,min$^{-1}$ through tubing of the same type in laminar flow. Diffusion losses are therefore
@@ -890,11 +880,11 @@ forward-scattering correction. The estimator without it is trained like the full
 \begin{adjustbox}{max width=\textwidth}\small\input{tables/tab_uncertainty.tex}\end{adjustbox}
 \end{table}
 
-The forward-scattering correction (Sect.~\ref{sec:forward}) is essential. With the plain
-$Q_\mathrm{ext}$, $N/N_\mathrm{CPC}$ falls from 0.981 to 0.625 while $q_w$ is still retrieved
+The forward-scattering correction (Sect.~\ref{sec:forward}) is essential. Without the correction,
+$N/N_\mathrm{CPC}$ falls from 0.981 to 0.625. The retrieved $q_w$ changes little
 ($q_w/q_{w,\mathrm{hyg}} = 1.026$).
-The model then attributes the measured extinction to droplets that each extinguish more light and
-so needs fewer of them.
+Each simulated droplet then removes more light from the beam, so fewer droplets explain the measured
+extinction.
 The correction was added after an earlier version of the model without it had given $N$ far below
 the CPC. However, the correction follows from the size and position of the photodiode alone and
 contains no adjustable parameter. The agreement is thus not the result of a fit.
@@ -905,14 +895,12 @@ $\alpha_c = 1$ than at the reference value 0.3. Slower growth of each droplet mu
 more droplets, and faster growth by fewer.
 However, the fits at $\alpha_c = 0.1$ are worse (median misfit about five times that of the reference fits).
 The curves thus disfavor $\alpha_c = 0.1$ but do not distinguish 0.3 from 1.
-The other parameters change $N$ by at most 2.1\,\% (the geometric
-mean dry radius has the largest effect among them). The spread of the droplet sizes has no effect
-within the inference window,
-consistent with the narrow droplet spectra in such chambers, which produce coronae
-\citep{aoki2013corona,moteki2013new}. Per cycle, the leave-one-day-out estimate of $N$ is higher than that
-of an estimator trained on all
-three days by 0.8\,\% (median; IQR $-0.2$ to $+1.7$\,\%). Retrainings of one estimator with other
-random seeds change $N$ by about as much (Sect.~\ref{S-sec:s-models}).
+The other parameters change $N$ by at most 2.1\,\%, the geometric mean dry radius most. The spread of the
+droplet sizes has no effect within the inference window. This agrees with the narrow droplet spectra in such
+chambers, which produce coronae
+\citep{aoki2013corona,moteki2013new}. The leave-one-day-out estimates of $N$ are 0.8\,\% higher per cycle
+(median; IQR $-0.2$ to $+1.7$\,\%) than those of an estimator trained on all three days. Retraining with
+another random seed changes $N$ by about as much (Sect.~\ref{S-sec:s-models}).
 
 Among the fixed parameters of the model, the optical path is the least constrained.
 With $L = 0.17$ or 0.19\,m instead of 0.18\,m, $N$ changes by $+8$ or $-7$\,\%.
@@ -926,15 +914,16 @@ amount to about $\pm9$\,\%, dominated
 by the optical path (about $\pm7$\,\%) and the CPC ($\pm5$\,\%). A condensation coefficient as low
 as 0.1 would add up to $+12$\,\%.
 The observed median ratio of 0.995 is within these uncertainties.
-The inlet losses alone would make the ratio 1--5\,\% higher (Sect.~\ref{sec:comparability}).
-The curves slightly favor a path of 0.17\,m, which would raise the ratio by a further 8\,\%.
-The path was kept at the value fixed beforehand from the geometry of the flask (Sect.~\ref{sec:forward}).
+Two effects would raise the ratio. The inlet losses make $N/N_\mathrm{CPC}$ 1--5\,\% higher even for an
+ideal chamber (Sect.~\ref{sec:comparability}). The curves slightly favor a path of 0.17\,m, which would
+raise $N$ by a further 8\,\%. We kept the path at 0.18\,m, the value fixed beforehand from the geometry of
+the flask (Sect.~\ref{sec:forward}).
 
 
 \subsection{Comparison with earlier expansion particle counters}
 \label{sec:earlier}
-The principles of the earlier expansion particle counters were described in Sect.~\ref{sec:intro}.
-Their details also matter for the accuracy.
+Section~\ref{sec:intro} described the principles of the earlier expansion particle counters. Here we compare
+details that affect their accuracy.
 The vSANC reads the droplet size at five scattering angles with photomultipliers, lens--pinhole
 optics and a reference detector \citep{pinterich2016vsanc}.
 Even with a working fluid, the water vapor of the sample matters in that instrument.
@@ -947,17 +936,16 @@ linearization
 underestimates $N$ by 5\,\% at an optical thickness of 0.1.
 When the depletion of the vapor suppresses the second pair of extrema, it has to fall back on the first
 \citep{saghafifar2009modified}.
-Here the exponential law and the variation of $\theta_c$ along the beam in Eq.~(\ref{eq:qeff}) are
-included, and the Mie ripples are smoothed by the spread of droplet sizes in the model rather than
-in the data.
+Our model keeps the exponential law and the variation of $\theta_c$ along the beam (Eq.~\ref{eq:qeff}). It
+smooths the Mie ripples through the spread of droplet sizes in the model, not by smoothing the data.
 Every cycle in 52\,h gave an estimate (Sect.~\ref{sec:results}).
-The price of fitting the curve instead of reading selected features is that the estimate depends on
-the growth model. Errors of the
+Fitting the curve instead of reading selected features has a price: the estimate depends on the growth
+model. Errors of the
 growth model are covered only to the extent that the priors of its parameters contain the true values
 (Sect.~\ref{sec:budget}).
 Extinction is also a weaker signal than scattered light at low number concentrations because it is a small
 change of a large baseline \citep{kurten2005automated}.
-The consequence is stated in Sect.~\ref{sec:limitations}.
+This limits the lowest measurable $N$ (Sect.~\ref{sec:limitations}).
 
 The agreement with the CPC can be compared with that of earlier expansion counters. Expansion counters
 of the Nolan--Pollak type typically agreed within $\pm12$\,\% \citep{gras2002nolan}. An
@@ -975,8 +963,8 @@ Because $q_w$ is retrieved without such variations, the cause most likely lies i
 model that converts the curve into $N$.
 Apart from the condensation coefficient, the nuisance parameters within their priors change $N$ by
 at most 2.1\,\% (Sect.~\ref{sec:budget}).
-The variations would thus require the condensation coefficient or the particles (size distribution
-or composition beyond the priors) to change over time, or a process missing from the model.
+The variations would therefore need changes over time in the condensation coefficient or in the particles
+(size distribution or composition beyond the priors), or a process missing from the model.
 
 The variations are not represented in the model.
 This is one reason why the credible intervals contain the CPC value in only 46\,\% of the cycles:
@@ -1002,9 +990,9 @@ spectrometer, it limits the growth time more than conduction from the walls does
 
 The evaluation covers 52\,h of indoor air in one room, with $N$ between 370 and
 9500\,cm$^{-3}$ and $q_w$ between 5.8 and 9.2\,g\,kg$^{-1}$.
-Lower $N$ gives shallower extinction curves (within the inference
-window, Tr falls only to about 0.98 at 600\,cm$^{-3}$; Fig.~\ref{fig:cycle}a), so that $N$ is less
-constrained (90\,\% credible interval about $\pm8$\,\% at 500\,cm$^{-3}$; Fig.~\ref{fig:posterior}).
+At lower $N$ the extinction is weaker. Within the inference window, Tr falls only to about 0.98 at
+600\,cm$^{-3}$ (Fig.~\ref{fig:cycle}a), and the 90\,\% credible interval of $N$ widens to about $\pm8$\,\%
+at 500\,cm$^{-3}$ (Fig.~\ref{fig:posterior}).
 Below about 90--160\,cm$^{-3}$ at $q_w$ = 6--9\,g\,kg$^{-1}$, and below 320--560\,cm$^{-3}$ at
 3--4\,g\,kg$^{-1}$, the simulated cloud does not reach Tr = 0.985 and no estimate is made
 ($T_\mathrm{ini}$ = 23\,$^\circ$C; Fig.~\ref{S-fig:s_envelope}).
@@ -1044,15 +1032,15 @@ The key is to interpret the shape of the extinction curve of the cloud with a ph
 formation and growth. Neural posterior estimation inverts this model. It infers the water vapor of the
 sample together with $N$ and takes the place of both the reference particle counter and the operator.
 The chamber ran for 52\,h with two restarts and one slight realignment of the laser.
-Over 370--9500\,cm$^{-3}$, $N$ agreed with a CPC to a median ratio of 0.995 ($r = 0.997$), within
+Over 370--9500\,cm$^{-3}$, the ratio of $N$ to $N_\mathrm{CPC}$ had a median of 0.995 ($r = 0.997$), within
 the uncertainty of the comparison (about $\pm9$\,\%, excluding the condensation coefficient and the
 inlet losses).
-The inferred $q_w$ agreed with a chilled-mirror hygrometer to a median ratio of 0.997.
+The inferred $q_w$ agreed with a chilled-mirror hygrometer (median ratio 0.997).
 In theory, the chamber activates soluble particles at least as small as those counted by the CPC.
 Variations of the 3-h median ratio between 0.95 and 1.09 remain unexplained.
 A working-fluid-free particle counter that is simple to build
-thus appears feasible for unattended monitoring of the particle number concentration, once characterized in
-the laboratory and tested in outdoor air and over wider ranges of pressure and humidity.
+thus appears feasible for unattended monitoring of the particle number concentration. It first needs a
+laboratory characterization and tests in outdoor air and over wider ranges of pressure and humidity.
 
 \section*{CRediT authorship contribution statement}
 \textbf{Nobuhiro Moteki:} Conceptualization, Methodology, Software, Validation, Formal analysis,

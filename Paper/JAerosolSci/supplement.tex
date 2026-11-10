@@ -30,10 +30,9 @@ and water vapor from the laser-extinction curve of an expansion cloud by simulat
 \label{sec:s-parts}
 Table~\ref{tab:s_parts} lists the parts of the instrument (Sect.~\ref{M-sec:instrument} of the paper). The
 pressure sensor, the data acquisition device and the laptop computer account for about two thirds of the
-cost, and each of them can be replaced by a much cheaper part. The analysis of a cycle takes about
-0.1\,s (Sect.~\ref{M-sec:npe} of the paper), so that a single-board computer with an analog-to-digital
-converter
-should suffice. A cheaper pressure sensor can be used if its response time is about 10\,ms or
+cost. Each of them can be replaced by a much cheaper part. The analysis of a cycle takes about 0.1\,s
+(Sect.~\ref{M-sec:npe} of the paper). A single-board computer with an analog-to-digital converter should
+therefore suffice. A cheaper pressure sensor can be used if its response time is about 10\,ms or
 shorter, like that of the present one (Sect.~\ref{sec:s-pform}).
 
 \begin{table}[!htbp]
@@ -49,8 +48,8 @@ rounded). The total corresponds to about US\$4700.}
 The air in the optically probed core of the sealed flask is treated as a closed, adiabatic system of
 unit mass of dry air with water vapor $q_v$ and liquid water $q_l$, $q_v + q_l = q_w$ = const. Its
 volume is $v = (R_d + q_v R_v)\,T/p$ (ideal gases at the common pressure $p$, liquid volume
-neglected). With no heat exchange and only the work of expansion, the first law gives
-$du = -p\,dv$, i.e.\ for the enthalpy $h = u + pv$,
+neglected). With no heat exchange and only the work of expansion, the first law gives $du = -p\,dv$. For the
+enthalpy $h = u + pv$, this becomes
 \begin{equation}
 dh = v\,dp .
 \label{eq:s-first-law}
@@ -58,7 +57,7 @@ dh = v\,dp .
 This holds whether or not the condensation proceeds in equilibrium, since the vapor, the droplets and
 the air exchange heat only with each other. The enthalpy is
 $h = c_{pd}T + q_v h_v(T) + q_l h_l(T)$, with $dh_v/dT = c_{pv}$, $dh_l/dT = c_l$ and
-$h_v - h_l = l_v$, so that, with $dq_l = -dq_v$,
+$h_v - h_l = l_v$. With $dq_l = -dq_v$, its differential is
 \begin{equation}
 dh = \left(c_{pd} + q_v c_{pv} + q_l c_l\right) dT + l_v\,dq_v .
 \end{equation}
@@ -70,9 +69,9 @@ Without condensation it reduces to the dry adiabat of moist air. The latent heat
 $dq_v/dt$ and the total pressure $p$, so no approximation of the partial pressure of dry air is needed.
 
 The vapor pressure follows from Dalton's law, $e = q_v p/(\varepsilon + q_v)$ with
-$\varepsilon = R_d/R_v = 0.622$, and the saturation vapor pressure over a plane water surface from the
-Clausius--Clapeyron equation \citep[Eq.~4-83]{pruppacher1997microphysics} integrated with a constant
-latent heat, $e_s(T) = A\exp(-B/T)$ with $A = \SI{2.5368e11}{\pascal}$ and $B = \SI{5420.5}{\kelvin}$
+$\varepsilon = R_d/R_v = 0.622$. The saturation vapor pressure over a plane water surface follows from the
+Clausius--Clapeyron equation \citep[Eq.~4-83]{pruppacher1997microphysics} integrated with a constant latent
+heat. This gives $e_s(T) = A\exp(-B/T)$ with $A = \SI{2.5368e11}{\pascal}$ and $B = \SI{5420.5}{\kelvin}$
 ($\approx l_v/R_v$). It agrees with the formulation of \citet{murphy2005review} within 1\,\% between
 260 and 290\,K, which covers the cloud formation. At 300\,K the difference is about 2\,\%. The constants
 used are
@@ -81,41 +80,40 @@ $c_{pd} = \SI{1005}{\joule\per\kilogram\per\kelvin}$, $c_{pv} = \SI{1850}{\joule
 $c_l = \SI{4218}{\joule\per\kilogram\per\kelvin}$, $\rho_l = \SI{1000}{\kilogram\per\cubic\meter}$ and
 $l_v = \SI{2.501e6}{\joule\per\kilogram}$ (its value at 0\,$^\circ$C, held constant). This neglects the
 temperature dependence
-$dl_v/dT = c_{pv} - c_l$ implied by the enthalpies above, which changes $l_v$ by at most about 1\,\%
-between $-11$ and $+6$\,$^\circ$C, where the cloud forms.
+$dl_v/dT = c_{pv} - c_l$ implied by the enthalpies above. Between $-11$ and $+6$\,$^\circ$C, where the cloud
+forms, $l_v$ changes by at most about 1\,\%.
 The surface tension is $\sigma_w = 0.0761 - 1.55\times10^{-4}\,(T - 273.15\,\mathrm{K})$\,N\,m$^{-1}$.
-The density of the air is $\rho_a = p/(R_d T)$, and the number concentration per unit volume reported in
-the paper is $N\,p_\mathrm{ini}/(R_d T_\mathrm{ini})$, the same conversion as used for the comparison
-with the CPC.
+The density of the air is $\rho_a = p/(R_d T)$. The number concentration per unit volume reported in the
+paper is $N\,p_\mathrm{ini}/(R_d T_\mathrm{ini})$. The comparison with the CPC uses the same conversion.
 
-Heat conduction from the wall is neglected in the model, which describes the adiabatic core of the
-flask. The wall stays at the initial temperature, while the expanding gas has cooled by 20--30\,K
+The model describes the adiabatic core of the flask and neglects heat conduction from the wall. The wall
+stays at the initial temperature, while the expanding gas has cooled by 20--30\,K
 at the time of the inference window. By conduction alone, the gas at a distance $\delta$ from the wall is
-warmed by the fraction $\mathrm{erfc}[\delta/(2\sqrt{D_\mathrm{th} t})]$ of this difference, with the thermal
-diffusivity of air $D_\mathrm{th} \approx \SI{2.4e-5}{\square\meter\per\second}$ at the reduced pressure.
+warmed by the fraction $\mathrm{erfc}[\delta/(2\sqrt{D_\mathrm{th} t})]$ of this difference. Here
+$D_\mathrm{th} \approx \SI{2.4e-5}{\square\meter\per\second}$ is the thermal diffusivity of air at the
+reduced pressure.
 A tenth
 of the difference reaches $\delta \approx 1.2$--1.5\,cm at the start of the inference window
 (1.1--1.6\,s after $t_0$) and 1.6--1.9\,cm at its end (2.1--2.6\,s after $t_0$; 5--95\,\% of the
-cycles). If the cloud
-vanished wherever the gas had been warmed by this much, the optical path through the cloud (inner
-diameter about 0.197\,m) would shorten from about 0.17\,m at the start of the window to about 0.16\,m at
-its end, against the 0.18\,m assumed in the paper.
+cycles). The inner diameter of the flask is about 0.197\,m. If the cloud vanished wherever the gas had been
+warmed by this much, the optical path through the cloud would shorten from about 0.17\,m at the start of the
+window to about 0.16\,m at its end. The paper assumes 0.18\,m.
 
 This was tested against the recorded curves (Table~\ref{tab:s_path}). For the 104 cycles of
-Sect.~\ref{sec:s-nuisance}, $\log_{10}N$ was fitted as there ($q_w$ fixed at the hygrometer value, reference
-nuisance parameters) with constant paths of 0.16--0.19\,m and with a path
-that shrinks in time as above, $L(t) = \min[0.18\,\mathrm{m},\, 0.197\,\mathrm{m} - 2b\sqrt{t}]$ with
-$b = 2c\sqrt{D_\mathrm{th}}$ (m\,s$^{-1/2}$) and $\mathrm{erfc}(c) = 0.1$ (or half of this $b$).
+Sect.~\ref{sec:s-nuisance}, $\log_{10}N$ was fitted as there, with $q_w$ fixed at the hygrometer value and
+the reference nuisance parameters. The fits used constant paths of 0.16--0.19\,m and a path that shrinks in
+time as above, $L(t) = \min[0.18\,\mathrm{m},\, 0.197\,\mathrm{m} - 2b\sqrt{t}]$. Here
+$b = 2c\sqrt{D_\mathrm{th}}$ (m\,s$^{-1/2}$) with $\mathrm{erfc}(c) = 0.1$, or half of this $b$.
 A path of 0.19\,m fits the curves worse than 0.18\,m.
-Paths of 0.16 and 0.17\,m and the shrinking path give a slightly lower median misfit than 0.18\,m,
-but none fits better in a clear majority of the cycles (44--59\,\%). The differences are small.
-With half of $b$ the path stays at 0.18\,m through nearly all of the window, so that it gives the
-same $N$ as 0.18\,m.
+Paths of 0.16 and 0.17\,m and the shrinking path give a slightly lower median misfit than 0.18\,m. However,
+none of them fits better in a clear majority of the cycles (44--59\,\%). The differences are small.
+With half of $b$, the path stays at 0.18\,m through nearly all of the window and gives the same $N$ as a
+constant 0.18\,m.
 After the window ($t_\mathrm{s}$ + 1.2--1.5\,s), the measured Tr lies above the curve simulated with 0.18\,m
 by
 a median of $9\times10^{-3}$ at $N$ below 1100\,cm$^{-3}$ and $4\times10^{-3}$ above 2100\,cm$^{-3}$.
 The shrinking path lowers this residual by about $3\times10^{-3}$ at low $N$ and by about
-$10\times10^{-3}$ at high $N$, so that it overshoots at high $N$. Shorter constant paths act in the
+$10\times10^{-3}$ at high $N$. At high $N$ it therefore overshoots. Shorter constant paths act in the
 same way.
 The curves thus allow a thicker cloud-free layer or one that thickens by conduction. Such a layer
 does not explain why the measured Tr stops falling, which happens mostly at low $N$. A path of 0.17\,m
@@ -128,8 +126,9 @@ rms residual is
 $1.4\times10^{-3}$ (median; 5--95\,\%: 0.7--$3.6\times10^{-3}$). It grows with $N$, from
 $0.9\times10^{-3}$ below 1000\,cm$^{-3}$ to $4\times10^{-3}$ above 3000\,cm$^{-3}$, mainly through
 the timing of the maxima of the extinction. After the window the measured Tr lies systematically
-above the model. The departure starts about 1\,s after $t_\mathrm{s}$ at $N$ below 1000\,cm$^{-3}$ and later
-at higher $N$, at about 1.8\,s above 3000\,cm$^{-3}$. At 1.2--1.5\,s after $t_\mathrm{s}$ the median
+above the model. The departure starts about 1\,s after $t_\mathrm{s}$ at $N$ below 1000\,cm$^{-3}$. It
+starts later at higher $N$, about 1.8\,s after $t_\mathrm{s}$ above 3000\,cm$^{-3}$. At 1.2--1.5\,s after
+$t_\mathrm{s}$ the median
 residual is
 $+0.010$, $+0.004$ and $+0.001$ for $N$ of 300--1000, 1000--3000 and 3000--10\,000\,cm$^{-3}$.
 
@@ -158,33 +157,32 @@ $b/2$.}
 \end{table}
 
 Equations~(\ref{M-eq:temperature}) and (\ref{M-eq:growth}) of the paper are integrated with an explicit
-time step of 1\,ms. Each of the 12 bins is sub-stepped according to its relaxation rate, and
-unactivated haze droplets that relax faster than the time step are kept in equilibrium with the
+time step of 1\,ms. Each of the 12 bins is sub-stepped according to its relaxation rate. Unactivated haze
+droplets that relax faster than the time step are kept in equilibrium with the
 saturation ratio.
-Twelve equal-number bins reproduce Tr of 96 equal-number bins and of 60 log-spaced bins weighted by
-the lognormal within $3\times10^{-5}$ in the inference window for the reference values of the aerosol
-parameters at
-$N$ = 500--8000\,cm$^{-3}$ and $q_w$ = 5.8--9.2\,g\,kg$^{-1}$. The $N$ needed to match differs by
-less than 0.01\,\%. Only at the corner of the prior ($r_g$ = 20\,nm, $\sigma_g$ = 2.2,
-$\kappa$ = 0.1), where 1--2\,\% of the particles stay unactivated, do the 12 bins activate all
-particles, so that $N$ would be up to 2\,\% low (\texttt{Python/\allowbreak paper\_bin\_convergence.py}).
+Twelve equal-number bins reproduce Tr within $3\times10^{-5}$ in the inference window. The comparison is
+with 96 equal-number bins and with 60 log-spaced bins weighted by the lognormal. It used the reference
+values of the aerosol parameters, $N$ = 500--8000\,cm$^{-3}$ and $q_w$ = 5.8--9.2\,g\,kg$^{-1}$. The $N$
+needed to match differs by
+less than 0.01\,\%. The exception is the corner of the prior ($r_g$ = 20\,nm, $\sigma_g$ = 2.2, $\kappa$ =
+0.1). There 1--2\,\% of the particles stay unactivated, but the 12 bins activate all of them, so $N$ would
+be up to 2\,\% low (\texttt{Python/\allowbreak paper\_bin\_convergence.py}).
 
 \section{Effective extinction efficiency}
 \label{sec:s-qeff}
-The photodiode (3.6\,mm $\times$ 3.6\,mm) is replaced by the circle of equal area, of radius
-$r_\mathrm{PD} = 3.6\,\mathrm{mm}/\sqrt{\pi} = 2.03$\,mm, centered on the beam. A droplet on the beam at
+The model replaces the photodiode (3.6\,mm $\times$ 3.6\,mm) by a circle of equal area centered on the beam.
+Its radius is $r_\mathrm{PD} = 3.6\,\mathrm{mm}/\sqrt{\pi} = 2.03$\,mm. A droplet on the beam at
 the distance $\ell$ from the photodiode sees it within the half-angle $\theta_c(\ell) =
 \arctan(r_\mathrm{PD}/\ell)$.
-For a droplet of radius $a$ in a beam of intensity $I$, the power scattered into this cone is, after
-integration over the azimuth \citep[Eqs.~4.74 and 4.77]{bohren1983absorption},
+For a droplet of radius $a$ in a beam of intensity $I$, integration over the azimuth \citep[Eqs.~4.74 and
+4.77]{bohren1983absorption} gives the power scattered into this cone,
 \begin{equation}
 P_c = \frac{\pi I}{k^2}\int_0^{\theta_c}\left(|S_1(\theta)|^2 + |S_2(\theta)|^2\right)\sin\theta\,d\theta ,
 \end{equation}
 with $k = 2\pi/\lambda$, independent of the polarization. Dividing by $\pi a^2 I$ gives the
 correction term of Eq.~(\ref{M-eq:qeff}) of the paper.
-It is subtracted from $Q_\mathrm{ext}$ and averaged uniformly over $\ell$ = 10--190\,mm, i.e.\ over
-the cloud of length $L = 0.18$\,m centered in the flask
-with the photodiode 100\,mm from the center.
+It is subtracted from $Q_\mathrm{ext}$ and averaged uniformly over $\ell$ = 10--190\,mm. This range covers
+the cloud of length $L = 0.18$\,m centered in the flask, with the photodiode 100\,mm from the center.
 The correction assumes single scattering (Tr stays above 0.85) and a beam that crosses the flask
 through its center.
 It neglects the refraction of the scattered light by the curved wall in front of the photodiode and
@@ -210,8 +208,8 @@ $Q_\mathrm{ext}$, and narrows as $a^{-2}$ but not below a prescribed lower bound
 $Q_\mathrm{eff}/Q_\mathrm{ext}$ is 0.97 at $a = 1$\,\textmu m, 0.93 at
 2\,\textmu m and 0.89 at 3\,\textmu m (Fig.~\ref{fig:s_qext}).
 
-The narrow droplet spectra assumed here are typical of expansion chambers of this type, in which the
-cloud displays coronae with several colored rings that require nearly monodisperse droplets
+The narrow droplet spectra assumed here are typical of expansion chambers of this type. In such chambers the
+cloud displays coronae with several colored rings, which require nearly monodisperse droplets
 \citep{aoki2013corona,moteki2013new}. Within the inference window, the spread $s$ has no effect on the
 inferred $N$ (Table~\ref{M-tab:uncertainty} of the paper).
 
@@ -235,8 +233,8 @@ S_p = S_0\left(1 - \frac{p_\mathrm{off}}{p}\right),
 \label{eq:s-pumpspeed}
 \end{equation}
 which vanishes at the asymptotic pressure $p_\mathrm{off}$ (Pa), the ultimate pressure of the pump
-\citep[pp.~87 and 91--92]{eckle1998diaphragm}. $S_p$ (m$^3$\,s$^{-1}$) is the flow of
-volume at the pressure and temperature in the chamber, and $S_0$ is the stroke rate times the maximum
+\citep[pp.~87 and 91--92]{eckle1998diaphragm}. $S_p$ (m$^3$\,s$^{-1}$) is the volume flow at the pressure
+and temperature in the chamber. $S_0$ is the stroke rate times the maximum
 volume of the pump chamber. The ultimate pressure of the pump is about half the room pressure
 (Sect.~\ref{M-sec:chamber} of the paper), so that $S_p$ is only about half of $S_0$ even at the start
 of the expansion. The $p_\mathrm{off}$ fitted with Eq.~(\ref{M-eq:pressure}) of the paper is not well
@@ -301,16 +299,15 @@ p(t) \approx p_\mathrm{ini} - (p_\mathrm{ini} - p_\mathrm{off})
 \end{equation}
 a quadratic, concave-down start of the drop that comes from the linear growth of $C$
 while the valve
-opens. A sum of decaying exponentials that starts at $t_0$ is concave up throughout and falls most
-steeply at $t_0$, so that it cannot reproduce this start. The fit with instantaneous opening instead
-moves $t_0$ later and cuts across the curve (inset of Fig.~\ref{M-fig:pressure}a of the paper). The
-response of the sensor and of the tubing to it would also round the start of the drop. The stated
-time constant of the sensor is 10\,ms (to 90\,\% of a pressure step). The Poiseuille time constant of
-the tubing
-(Sect.~\ref{M-sec:sensors} of the paper) with the sensor volume and the acoustic delay are each about
+opens. A sum of decaying exponentials that starts at $t_0$ is concave up throughout and falls most steeply
+at $t_0$. It therefore cannot reproduce this start. The fit with instantaneous opening instead
+moves $t_0$ later and cuts across the curve (inset of Fig.~\ref{M-fig:pressure}a of the paper). A slow
+response of the sensor and of its tubing would also round the start of the drop. However, the stated time
+constant of the sensor is only 10\,ms (to 90\,\% of a pressure step). The Poiseuille time constant of the
+tubing with the sensor volume (Sect.~\ref{M-sec:sensors} of the paper) and the acoustic delay are each about
 2\,ms. All three are much shorter than the 0.5--0.7\,s observed.
-After full opening, the integral of $C$ is the triangle $\Delta t_\mathrm{open}/2$ plus the time since
-full opening, so that the pressure then decays as if the valve had opened instantly at
+After full opening, the integral of $C$ is the triangle $\Delta t_\mathrm{open}/2$ plus the time since full
+opening. The pressure then decays as if the valve had opened instantly at
 $t_0 + \Delta t_\mathrm{open}/2$.
 
 \begin{table}[!htbp]
@@ -339,9 +336,9 @@ $q_w$ (g\,kg$^{-1}$) & $t_\mathrm{s}$ (s) & $q_{w,\mathrm{single}}/q_w$ & $N_\ma
 The effect of the form on the estimates was tested with the forward model, using the script
 \texttt{Python/\allowbreak paper\_pressure\_form\_effect.py}.
 For a recorded cycle, Tr was simulated with the fit
-of Eq.~(\ref{M-eq:pressure}) of the paper and the estimated $q_w$ and $N$ (reference nuisance
-parameters) and taken as the truth. The pressure curve was then replaced by the fit of the single
-exponential with instantaneous opening to the same record, and $q_w$ and $N$ were refitted by
+of Eq.~(\ref{M-eq:pressure}) of the paper and the estimated $q_w$ and $N$ (reference nuisance parameters).
+This simulated curve served as the truth. The pressure curve was then replaced by the single exponential
+with instantaneous opening fitted to the same record. With this curve, $q_w$ and $N$ were refitted by
 minimizing the rms difference of Tr over the inference window. For 30 cycles spread evenly in time over the
 measurement period, the single exponential gives $q_w$ higher by 1.6\,\% (median; range 0.5--2.2\,\%) and
 $N$ within
@@ -351,10 +348,10 @@ The refitted curves match the truth to within 0.0007 in Tr. This is below the rm
 forward model within the inference window (median $1.4\times10^{-3}$; Sect.~\ref{sec:s-thermo}), so the
 bias would not show in the fit.
 In humid air, the cloud forms earlier and the inference window
-overlaps the opening of the valve. With the pressure curves and initial states of the two cycles of
-Fig.~\ref{M-fig:cycle} of the paper and synthetic $q_w$ beyond the evaluated range
-(Table~\ref{tab:s_pform}), the bias in $q_w$ changes sign as the window moves across the residual of
-the single exponential, and that in $N$ reaches up to $+1.6$\,\% when the cloud forms within 0.7\,s.
+overlaps the opening of the valve. This was tested with the pressure curves and initial states of the two
+cycles of Fig.~\ref{M-fig:cycle} of the paper and with synthetic $q_w$ beyond the evaluated range
+(Table~\ref{tab:s_pform}). The bias in $q_w$ changes sign as the window moves across the residual of the
+single exponential. The bias in $N$ reaches up to $+1.6$\,\% when the cloud forms within 0.7\,s.
 Equation~(\ref{M-eq:pressure}) of the paper is therefore needed most in humid air.
 
 
@@ -369,14 +366,12 @@ They trade off against each other and against $f_1$ because the curves are recor
 The curves themselves
 are much more uniform (Fig.~\ref{fig:s_pressure}b, c): 90\,\% of the relative pressure drops lie within
 $-1.7$ to $+1.6$\,\% of the median at 1\,s and within $-0.6$ to $+0.8$\,\% at 4\,s. The observation vector
-therefore contains the pressure drop of the fitted curve at 11 fixed times rather than the fit
-parameters, and the simulator draws whole fitted curves (with their parameters) from a library of
-the recorded cycles of the days used to train the estimator (Sect.~\ref{M-sec:lodo} of the paper),
-scaled in drop and time by up to $\pm5$\,\% and with the
-valve-opening duration $\Delta t_\mathrm{open}$ shifted by up to $\pm0.05$\,s
-(Table~\ref{M-tab:priors} of the paper).
-Changes of
-the pump or valve within this range are thus absorbed by the inference without retraining.
+therefore contains the pressure drop of the fitted curve at 11 fixed times, not the fit parameters. The
+simulator draws whole fitted curves (with their parameters) from a library of the recorded cycles of the
+days used to train the estimator (Sect.~\ref{M-sec:lodo} of the paper). It scales them in drop and time by
+up to $\pm5$\,\% and shifts the valve-opening duration $\Delta t_\mathrm{open}$ by up to $\pm0.05$\,s
+(Table~\ref{M-tab:priors} of the paper). The inference thus absorbs changes of the pump or valve within this
+range without retraining.
 
 
 \begin{figure}[!htbp]
@@ -393,9 +388,8 @@ times used in the observation vector. (c) Spread of the drop at those times rela
 \section{Training of the neural posterior estimator}
 \label{sec:s-npe}
 Each estimator uses 30\,000 draws from the priors (Table~\ref{M-tab:priors} of the paper). In
-24\,304--24\,317 of them (81\,\%) the simulated cloud reaches Tr = 0.985 within the simulated 4.2\,s, so
-that the
-onset $t_\mathrm{s}$ and the observation vector $\bm{y}$ are defined.
+24\,304--24\,317 of them (81\,\%), the simulated cloud reaches Tr = 0.985 within the simulated 4.2\,s. Only
+these draws have a defined onset $t_\mathrm{s}$ and observation vector $\bm{y}$.
 The others are discarded.
 This restricts the posterior to cycles that produce a measurable cloud, as all recorded cycles did.
 The last 2000 usable pairs are held out
@@ -410,54 +404,55 @@ random cases shown). (c) Empirical coverage of central credible intervals.}
 \label{fig:s_heldout}
 \end{figure}
 
-The posterior $q_\phi(\bm{\psi}\mid \bm{y})$ is a neural spline flow \citep{durkan2019neural} built with
-\texttt{sbi} 0.27.0 and PyTorch 2.14 \citep{tejerocantero2020sbi,boelts2025sbi}, with the default settings of
-its neural spline flow. The flow maps a standard normal distribution onto the posterior through a chain
-of invertible monotonic functions, whose parameters a neural network computes from $\bm{y}$. It has five
+The posterior $q_\phi(\bm{\psi}\mid \bm{y})$ is a neural spline flow \citep{durkan2019neural}. It is built
+with \texttt{sbi} 0.27.0 and PyTorch 2.14 \citep{tejerocantero2020sbi,boelts2025sbi} with the default
+settings of \texttt{sbi} for this flow. The flow maps a standard normal distribution onto the posterior
+through a chain of invertible monotonic functions. A neural network computes their parameters from $\bm{y}$.
+It has five
 rational-quadratic spline transforms with ten bins. Each transform is conditioned on $\bm{y}$ through a
 residual network with 50 hidden units in two blocks. $\bm{\psi}$ and the 115 components of $\bm{y}$ are
 z-scored independently with the means and standard deviations of the training set. The flow is trained with
 Adam
-(learning rate \num{5e-4}, batches of 200, gradient norm clipped at 5) on 90\,\% of the training
-pairs and stopped when the loss on the other 10\,\% has not improved for 20 epochs (passes through
+(learning rate \num{5e-4}, batches of 200, gradient norm clipped at 5) on 90\,\% of the training pairs.
+Training stops when the loss on the other 10\,\% has not improved for 20 epochs (passes through
 the training set). The prior of
 $\bm{\psi}$ is a uniform distribution (Table~\ref{M-tab:priors} of the paper), and samples outside it are
 rejected.
 On a separate laptop (Intel Core i7-13700H CPU), the 30\,000 simulations take 2--3\,min with 11 parallel
 processes, and the training converges after 80--130 epochs in 4--8\,min.
 
-A recorded cycle is evaluated by drawing 1000 samples from $q_\phi(\bm{\psi}\mid \bm{y})$, from which the
-median and the 5--95\,\% interval of $q_w$ and $\log_{10}N$ are taken. The complete processing of a
+To evaluate a recorded cycle, 1000 samples are drawn from $q_\phi(\bm{\psi}\mid \bm{y})$. The median and the
+5--95\,\% interval of $q_w$ and $\log_{10}N$ are taken from these samples. The complete processing of a
 cycle (onset detection, fit of the pressure curve, observation vector and sampling) takes 0.08\,s
 (median; 95th percentile 0.16\,s) on the laptop used for the measurements.
 
 The onset time $t_\mathrm{s}$ of the observation vector is defined on the transmittance $\mathrm{Tr} = I/I_0$
 (Sect.~\ref{M-sec:obs} of the paper). The baseline is the median of Tr from the start of the expansion
-phase to $t_0$. $t_\mathrm{s}$ is the last time before Tr first falls to 0.985 at which Tr is still above the
-baseline minus a noise margin of five standard deviations of the baseline (at least $10^{-3}$),
-interpolated linearly between samples. The simulated curves are reduced by the
+phase to $t_0$. The onset $t_\mathrm{s}$ is the last time at which Tr is still above the baseline minus a
+noise margin, before Tr first falls to 0.985. The margin is five standard deviations of the baseline, but at
+least $10^{-3}$. The onset is interpolated linearly between samples. The simulated curves are reduced by the
 same code.
 
 On the 2000 held-out simulations (Fig.~\ref{fig:s_heldout}), the rms error of the posterior median is
 0.22\,g\,kg$^{-1}$ for $q_w$ and 5.9\,\% for $N$.
 The central credible intervals contain the true value at their nominal rate (90\,\% intervals:
 91\,\% for $q_w$ and 90\,\% for $N$).
-This coverage test is recommended for checking whether the credible intervals of simulation-based
-inference contain the true value at their stated probability \citep{talts2018validating,hermans2022trust}.
+This coverage test is a recommended check of the credible intervals in simulation-based inference
+\citep{talts2018validating,hermans2022trust}.
 
 
 \section{Validation of the individual estimators}
 \label{sec:s-models}
-Four estimators were trained, identical except for the recorded pressure curves of their simulator
-library: one for each held-out day (trained on the other two days, e.g.\ on 31 Oct--1 Nov
-for 2 Nov) and one trained on all days. Table~\ref{tab:s_models} compares them
+Four estimators were trained that differ only in the recorded pressure curves of their simulator library.
+Three are leave-one-day-out estimators, each trained on the other two days (e.g.\ on 31 Oct--1 Nov for 2
+Nov). The fourth is trained on all three days. Table~\ref{tab:s_models} compares them
 on the cycles of Fig.~\ref{M-fig:validation}
-of the paper. On a given day, the estimator that has not seen that day and the estimators
-that have seen it give nearly the same result: for $N/N_\mathrm{CPC}$ the medians differ by at most
-0.02, and for $q_w/q_{w,\mathrm{hyg}}$ by at most 0.011. The estimates therefore depend little on whether the
-day was used in training, and the leave-one-day-out result of the paper is not limited by the
-number of recorded pressure curves. Per cycle, the leave-one-day-out estimate of $N$ is higher than that
-of the estimator trained on all days by 0.8\,\% (median; IQR $-0.2$ to $+1.7$\,\%).
+of the paper. On each day, the estimator that has not seen that day gives nearly the same result as the
+estimators that have seen it. The medians of $N/N_\mathrm{CPC}$ differ by at most 0.02, and those of
+$q_w/q_{w,\mathrm{hyg}}$ by at most 0.011. The estimates depend little on whether the day was used in
+training. The leave-one-day-out result of the paper is therefore not limited by the number of recorded
+pressure curves. The leave-one-day-out estimates of $N$ are 0.8\,\% higher per cycle (median; IQR $-0.2$ to
+$+1.7$\,\%) than those of the estimator trained on all days.
 Retraining the 2 Nov estimator on the same simulations with three other random seeds
 (\texttt{Python/\allowbreak paper\_seed\_variability.py}) changes the median $N/N_\mathrm{CPC}$ on 2 Nov
 from 0.981 to 0.972--0.979 and $q_w/q_{w,\mathrm{hyg}}$ from 0.999 to 1.003--1.004. Per cycle, $N$
@@ -479,19 +474,19 @@ inside the 90\,\% credible interval of $N$.}
 
 \section{Variations of the ratio to the CPC}
 \label{sec:s-hvac}
-The ratio $N/N_\mathrm{CPC}$ has a median of 0.995, and its median over consecutive 3-h intervals ranges
+The ratio $N/N_\mathrm{CPC}$ has a median of 0.995. Its median over consecutive 3-h intervals ranges
 from 0.95 to 1.09. Binned
 by the hygrometer mixing ratio (Fig.~\ref{fig:s_humidity}a), its median is 1.08 at 5.5--6.0\,g\,kg$^{-1}$,
 0.95 at 7.5--8.0\,g\,kg$^{-1}$ and 1.00--1.03 above 8.5\,g\,kg$^{-1}$. This pattern does not isolate an
-effect of humidity. The dry bins (below 7\,g\,kg$^{-1}$) come from 31 Oct and 1 Nov, when the driest air
-also had the lowest particle number concentration (nights): within each of these days the logarithm of
-the ratio is
-correlated with the mixing ratio ($r = -0.45$ and $-0.50$) and with the logarithm of $N_\mathrm{CPC}$
+effect of humidity. The dry bins (below 7\,g\,kg$^{-1}$) come from 31 Oct and 1 Nov. On these days the
+driest air came at night and also had the lowest particle number concentration. Within each of these days,
+the logarithm of the ratio is correlated with the mixing ratio ($r = -0.45$ and $-0.50$) and with the
+logarithm of $N_\mathrm{CPC}$
 ($r = -0.50$ and $-0.41$). The humid bins (above 8.5\,g\,kg$^{-1}$) come from 2 Nov and coincide with the
 periods without air conditioning described below. Humidity, particle number concentration, time of day
 and the state
 of the air conditioning thus varied together. With at least 20 cycles per bin, the differences
-between the bins are larger than their statistical uncertainty, but they are confounded with these
+between the bins are larger than their statistical uncertainty. However, they are confounded with these
 variables. Binned by $N_\mathrm{CPC}$ (Fig.~\ref{fig:s_humidity}b), the median is 1.05--1.06 below
 750\,cm$^{-3}$, 0.96--0.98 at 1300--4200\,cm$^{-3}$ and 0.99--1.01 above 5600\,cm$^{-3}$ (window open on
 2 Nov).
@@ -529,9 +524,8 @@ Opening the window raised $N_\mathrm{CPC}$ from about 1000 to 9000\,cm$^{-3}$, a
 conditioning and the air purifier lowered it.
 The chamber followed all changes.
 However, the ratio $N/N_\mathrm{CPC}$ changed with the air conditioning.
-Its median was 1.002 and 0.999 in the two periods with the air
-conditioning off and 0.947, 0.945 and 0.966 in the three periods with it on, and it changed within
-5--10\,min of switching.
+Its median was 1.002 and 0.999 in the two periods with the air conditioning off. It was 0.947, 0.945 and
+0.966 in the three periods with the air conditioning on. The ratio changed within 5--10\,min of switching.
 The periods without air conditioning largely coincide with the open window. With the air
 conditioning off, the median was 1.00 both with the window open (10:46--12:01) and closed
 (12:02--12:44). With the air conditioning on, switching the air purifier changed the median by at
@@ -541,13 +535,13 @@ However, with the air conditioning off the air was also more humid (period media
 This effect therefore cannot be separated from the
 variation with humidity in Fig.~\ref{fig:s_humidity}a.
 The cause was not identified.
-Possible explanations are particles
-emitted or modified by the air conditioners that the CPC counts but that activate less readily in the
-chamber, and size distributions outside the priors of the simulator.
+One possible explanation is that the air conditioners emitted or modified particles that the CPC counts but
+that activate less readily in the chamber. Another is that the size distributions were outside the priors of
+the simulator.
 From 10:00 to 10:18 water was nebulized near the inlets in a separate test.
 It produced short dense plumes that reached the inlets of the chamber and of the CPC at different times.
-The air sealed in the chamber during the flushing and the air of the 20-s median of the CPC therefore
-differed.
+The air sealed in the chamber during the flushing therefore differed from the air that the CPC sampled in
+the 20\,s before the expansion.
 These 18 cycles are excluded, as in the paper.
 
 
@@ -556,8 +550,8 @@ These 18 cycles are excluded, as in the paper.
 \label{sec:s-nuisance}
 The effect of each nuisance parameter on $N$ was evaluated directly with the forward model, outside
 the neural posterior estimator. For 104 cycles spread evenly over the range of $q_{w,\mathrm{hyg}}$
-(31 Oct--2 Nov), $\log_{10}N$ was fitted with $q_w$ fixed at $q_{w,\mathrm{hyg}}$ and the recorded
-pressure curve.
+(31 Oct--2 Nov), $\log_{10}N$ was fitted with the recorded pressure curve and with $q_w$ fixed at
+$q_{w,\mathrm{hyg}}$.
 The misfit $(\Delta t_\mathrm{s}/20\,\mathrm{ms})^2 + (\mathrm{rms}\,\Delta\mathrm{Tr}/0.003)^2$ was minimized
 over $\log_{10}N$ and over a time shift of the simulated curve within $\pm0.02$\,s.
 Here $\Delta t_\mathrm{s}$ is the difference in the onset of the extinction, and
@@ -580,14 +574,14 @@ parameter at an edge of its prior to that with the reference set, and median mis
 \small\input{tables/tab_s_nuisance.tex}
 \end{table}
 
-The condensation coefficient has the largest effect: at $\alpha_c = 0.1$ the droplets grow more
+The condensation coefficient has the largest effect. At $\alpha_c = 0.1$ the droplets grow more
 slowly, and the fit needs 12\,\% more of them to reproduce the curve.
 These fits are worse than the reference ones and better in only 4\,\% of the cycles.
 The curves thus disfavor $\alpha_c = 0.1$ but do not distinguish 0.3 from 1 (misfit 0.19 and 0.20). The
 condensation coefficient
-trades off against the time shift: with the shift held at zero, $N$ at $\alpha_c = 0.1$ would be 16\,\%
-higher. The aerosol parameters change $N$ by at most 2.1\,\%, and the spread of the droplet radius and
-its lower bound have no effect within the
+trades off against the time shift. With the shift held at zero, $N$ at $\alpha_c = 0.1$ would be 16\,\%
+higher. The aerosol parameters change $N$ by at most 2.1\,\%. The spread of the droplet radius and its lower
+bound have no effect within the
 inference window. In the neural posterior estimator all these parameters are marginalized over their
 priors, weighted by how well they reproduce the curve. The effects in Table~\ref{tab:s_nuisance}
 indicate the size of their contribution to the estimates.
@@ -595,8 +589,8 @@ indicate the size of their contribution to the estimates.
 The same fits were repeated with $q_w$ fixed at 0.97 and 1.03 times $q_{w,\mathrm{hyg}}$
 (\texttt{Python/\allowbreak paper\_\allowbreak qw\_\allowbreak sensitivity.py}).
 The sensitivity $\mathrm{d}\ln N/\mathrm{d}\ln q_w$ is $-2.3$ (median; IQR $-3.9$ to $-1.3$).
-An error of 3\,\% in $q_w$ thus changes $N$ by about 5--7\,\% in the opposite direction: a higher
-$q_w$ makes the droplets grow faster, so fewer of them reproduce the curve.
+An error of 3\,\% in $q_w$ thus changes $N$ by about 5--7\,\% in the opposite direction. A higher $q_w$
+makes the droplets grow faster, so fewer of them reproduce the curve.
 The fits with $q_{w,\mathrm{hyg}}$ itself are the best (median misfit 0.19 against 1.21 and 0.48
 for the factors 0.97 and 1.03).
 
@@ -631,18 +625,17 @@ TSI 3022A.}
 \label{fig:s_cutoff}
 \end{figure}
 
-These values are uncertain. Köhler theory is extrapolated below 10\,nm (surface tension, slightly
-soluble organics). The peak is reached 0.3\,s (highest $N$) to 1.4\,s (lowest $N$) after
-saturation. In 19\,\% of the cycles, mainly at the lowest $N$, it
-comes after the end of the inference window, where the measured Tr departs from the model
-(Sect.~\ref{M-sec:obs} of the paper).
+These values are uncertain. Köhler theory is extrapolated below 10\,nm, where the surface tension and
+slightly soluble organics add uncertainty. The peak is reached 0.3\,s (highest $N$) to 1.4\,s (lowest $N$)
+after
+saturation. In 19\,\% of the cycles, mainly at the lowest $N$, the peak comes after the end of the inference
+window. There the measured Tr departs from the model (Sect.~\ref{M-sec:obs} of the paper).
 Figure~\ref{fig:s_cutoff}b therefore also shows the cutoff for lower peaks.
 At $S_\mathrm{max} - 1 = 5$\,\% it would be about 14\,nm for
 $\kappa = 0.3$.
-The saturation ratios reached are up to about 1.75 (95th percentile of the cycles; up to 1.84 at
-the lowest $N$).
-In particle-free air, drops form only above a saturation ratio of about 4
-\citep{wilson1897condensation}, so ions and other nuclei that are not particles are not counted.
+The peak saturation ratio reaches about 1.75 at the 95th percentile of the cycles and up to 1.84 at the
+lowest $N$. In particle-free air, drops form only above a saturation ratio of about 4
+\citep{wilson1897condensation}. Ions and other nuclei that are not particles are therefore not counted.
 
 
 
@@ -653,12 +646,12 @@ high-$N$ cycle of Fig.~\ref{M-fig:cycle} of the paper was used with $T_\mathrm{i
 30\,$^\circ$C, $q_w$ from 2\,g\,kg$^{-1}$ to saturation and $N$ = 50--30\,000\,cm$^{-3}$ (reference nuisance
 parameters). The peak supersaturation falls with $N$ and rises as $T_\mathrm{ini}$ falls. For
 $\kappa = 0.1$ the cutoff stays below about 9\,nm up to 10$^4$\,cm$^{-3}$ and reaches 9--13\,nm at
-3$\times10^4$\,cm$^{-3}$. A measurable cloud (Tr reaching 0.985) needs more particles in drier air: at
-23\,$^\circ$C about 90, 160, 320 and 560\,cm$^{-3}$ at $q_w$ = 9, 6, 4 and 3\,g\,kg$^{-1}$, and about
+3$\times10^4$\,cm$^{-3}$. A measurable cloud (Tr reaching 0.985) needs more particles in drier air. At
+23\,$^\circ$C it needs about 90, 160, 320 and 560\,cm$^{-3}$ at $q_w$ = 9, 6, 4 and 3\,g\,kg$^{-1}$, and about
 2200\,cm$^{-3}$ at 2\,g\,kg$^{-1}$. At 30\,$^\circ$C no cloud forms at 2\,g\,kg$^{-1}$. At 10\,$^\circ$C
 in humid air ($q_w > 5$\,g\,kg$^{-1}$) with fewer than about 100\,cm$^{-3}$, the peak saturation ratio
-exceeds 4, so that drops
-could form also without particles. The estimator covers only its priors ($q_w$ = 3--20\,g\,kg$^{-1}$,
+exceeds 4. Drops could then form even without particles. The estimator covers only its priors ($q_w$ =
+3--20\,g\,kg$^{-1}$,
 $T_\mathrm{ini}$ = 288--303\,K) and would have to be retrained for other conditions.
 
 \begin{figure}[!htbp]
@@ -677,9 +670,10 @@ Thick line in (a): saturation ratio 4. Dashed box in (b, e): range of the measur
 \section{Diffusion losses in the inlets}
 \label{sec:s-losses}
 The sample reaches the flask through 1.2\,m of conductive silicone tubing of 4.8\,mm inner diameter
-(inlet to valve~1, 0.50\,m; valve~1 to the flask, 0.66\,m). During the 10-s flushing phase the pump draws
-about 30--40\,L\,min$^{-1}$, estimated from the pump curve (60\,L\,min$^{-1}$ free flow, $-533$\,hPa
-ultimate vacuum) and the flow resistance of the tubing, so that the flow is turbulent (Reynolds number
+(inlet to valve~1, 0.50\,m; valve~1 to the flask, 0.66\,m). During the 10-s flushing phase, the pump draws
+about 30--40\,L\,min$^{-1}$. This flow is estimated from the pump curve (60\,L\,min$^{-1}$ free flow,
+$-533$\,hPa ultimate vacuum) and the flow resistance of the tubing. The flow in the tubing is then turbulent
+(Reynolds number
 8400--11\,200; residence time 0.03--0.04\,s). With the deposition velocity for turbulent tube flow
 \citep[Eqs.~7.31--7.32]{hinds1999aerosol}, the chamber inlet removes 35--37\,\% of the particles of
 3\,nm diameter, 13--14\,\% of 7\,nm, 8--9\,\% of 10\,nm and 2\,\% of 30\,nm. The CPC draws its
@@ -699,10 +693,10 @@ can also count (Sect.~\ref{sec:s-cutoff}). The losses are calculated by
 
 The renewal of the sample can be estimated from the recorded pressures and the estimated flushing
 flow. After the expansion about 45\,\% of the air remains in the flask (450 of 990\,hPa). The refill
-brings the flask back to the room pressure with room air. The flushing then passes 5--6.7\,L in 10\,s,
-or 1.3--1.7 flask volumes, at the flow estimated above from the pump curve (it was not measured). If
-the flask is well mixed, $0.45\,\mathrm{e}^{-1.7}$ to $0.45\,\mathrm{e}^{-1.3}$ (8--12\,\%) of the old air
-remains, so that about 90\,\% of the sealed sample is renewed in each cycle. Both tubes end in the
+brings the flask back to the room pressure with room air. At the flow estimated above from the pump curve,
+the flushing then passes 5--6.7\,L in 10\,s (1.3--1.7 flask volumes). This flow was not measured. If the
+flask is well mixed, $0.45\,\mathrm{e}^{-1.7}$ to $0.45\,\mathrm{e}^{-1.3}$ (8--12\,\%) of the old air
+remains. About 90\,\% of the sealed sample is thus renewed in each cycle. Both tubes end in the
 neck. If part of the flushing flow passes from the inlet to the outlet without mixing with the air in
 the bulb, the renewal is lower.
 
