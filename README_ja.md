@@ -6,7 +6,7 @@ English: [README.md](README.md)
 
 ## 論文とデータ
 
-- 論文：N. Moteki, *Working-fluid-free measurement of particle number concentration and water vapor from the laser-extinction curve of an expansion cloud by simulation-based inference*（Journal of Aerosol Science に投稿）。原稿と補足資料は `Paper/JAerosolSci/`、図表は `Python/paper_*.py` で作ります。
+- 論文：N. Moteki, *Working-fluid-free measurement of particle number concentration and water vapor from the laser-extinction curve of an expansion cloud by simulation-based inference*（Journal of Aerosol Science に投稿）。プレプリント（投稿版、査読前）は [`Paper/JAerosolSci/preprint/`](Paper/JAerosolSci/preprint/)、原稿と補足資料の LaTeX ソースは `Paper/JAerosolSci/`、図表は `Python/paper_*.py` で作ります。
 - データ（2026-10-31〜11-02 の評価期間）：Zenodo、https://doi.org/10.5281/zenodo.24070205
 - 論文の結果を再現する手順は、英語の [README.md](README.md) にあります。
 

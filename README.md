@@ -15,7 +15,8 @@ Japanese ([README_ja.md](README_ja.md), `Docs/KankyoJissu2026/`).
 
 - N. Moteki, *Working-fluid-free measurement of particle number concentration and water vapor from the
   laser-extinction curve of an expansion cloud by simulation-based inference*, submitted to the Journal
-  of Aerosol Science. The manuscript and the supplement are in `Paper/JAerosolSci/`.
+  of Aerosol Science. Preprint (submitted version, not peer reviewed):
+  [`Paper/JAerosolSci/preprint/`](Paper/JAerosolSci/preprint/). The LaTeX sources are in `Paper/JAerosolSci/`.
 - Data: N. Moteki (2026), *Data for: Working-fluid-free measurement of particle number concentration and
   water vapor ...*, Zenodo, https://doi.org/10.5281/zenodo.24070205. The archive holds the raw signals of
   the 3132 cycles of 31 Oct to 2 Nov 2026, the per-cycle records, the CPC record and the estimates used
